@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Flow</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Font Awesome CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    {% if user.is_authenticated %}
+    {% include 'partials/_navbar.html' %}
+    {% endif %}
+
+    <!-- Main content area -->
+    <main class="flex-grow-1 container py-4">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% if user.is_authenticated %}
+    {% include 'partials/_footer.html' %}
+    {% endif %}
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" defer></script>
+  </body>
+</html>
