@@ -1,0 +1,30 @@
+{% if messages %}
+<div class="container">
+    {% for message in messages %}
+    <div
+        class="alert alert-{{ message.tags }} alert-dismissible fade show text-center"
+        role="alert">
+        <strong>
+            {% if message.level == 40 %} {# 40 = ERROR #}
+            Error:
+            {% else %}
+            {{ message.tags|title }}:
+            {% endif %}
+        </strong>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+  setTimeout(function () {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+      bsAlert.close();
+    });
+  }, 10000);
+</script>

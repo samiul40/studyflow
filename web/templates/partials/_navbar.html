@@ -1,0 +1,62 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" href="#">StudyFlow</a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNav" aria-controls="navbarNav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Left navigation -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Add Resources</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right side: Profile -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="dropdown">
+        <a href="#"
+          class="d-flex align-items-center text-decoration-none dropdown-toggle border-0 bg-transparent"
+          id="navbarUserDropdown" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <img src="{% static 'img/icons/user.svg' %}" alt="Profile"
+            width="36" height="36"
+            class="rounded-circle border" />
+          <span class="ms-2 fw-medium d-none d-lg-inline">{{ request.user.first_name }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg"
+          aria-labelledby="navbarUserDropdown">
+          <li class="px-3 py-2 border-bottom">
+            <small class="text-muted">Signed in as</small><br>
+            <strong class="text-dark-grey">{{ request.user.email }}</strong>
+          </li>
+          <li><a class="dropdown-item py-2 px-3" href="{% url 'settings' %}">
+              <i
+                class="fas fa-user-cog me-2 text-primary"></i>Settings</a></li>
+          <li><a class="dropdown-item py-2 px-3" href="{% url 'profile' %}">
+              <i class="fas fa-user me-2 text-info"></i>Profile</a></li>
+          <li><hr class="dropdown-divider mx-2"></li>
+          <li>
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
