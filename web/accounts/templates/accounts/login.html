@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} | Account Login {% endblock %}
+
+{% block content %}
+<section id="login" class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4>
+              <i class="fas fa-sign-in-alt"></i> Login
+            </h4>
+          </div>
+          <div class="card-body">
+            <!-- Alerts -->
+            {% include 'partials/_alerts.html' %}
+            <form actions="{% url 'login' %}" method="POST">
+              {% csrf_token %}
+              <div class="form-group mb-4">
+                <input type="text" name="username" placeholder="username" class="form-control" required>
+              </div>
+
+              <div class="input-group mb-4">
+                <input class="form-control" id="password" type="password" name="password" placeholder="Password" value="">
+                <span class="input-group-text" id="togglePass"><i class="fas fa-eye" id="togglePassword"></i></span>
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-check d-inline-block flex-row">
+                  <input class="form-check-input" type="checkbox" value="remember_me" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault" id="check">
+                    Remember Me
+                  </label>
+                </div>
+                <a href="" class="d-inline-block flex-row-reverse mx-2" id="forgetpassword">Forgot Password</a>
+              </div>
+
+              <input type="submit" value="Login" class="btn btn-secondary btn-block mt-4" id="login-btn">
+              
+              <div class="d-flex justify-content-center mt-3">
+                <p class=" d-inline-block">Not Registered?</p><a href="" class=" d-inline-block mx-1" id="register_account">Create an Account</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
