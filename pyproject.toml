@@ -20,6 +20,10 @@ known-first-party = [
     "studyflow"
 ]
 
-[tool.black]
-line-length = 88
-target-version = ["py311"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
