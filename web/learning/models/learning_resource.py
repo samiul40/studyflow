@@ -3,7 +3,6 @@ from django.db import models
 
 
 class LearningResource(models.Model):
-
     RESOURCE_TYPES = [
         ("udemy", "Udemy"),
         ("book", "Book"),
