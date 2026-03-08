@@ -4,7 +4,6 @@ from .learning_resource import LearningResource
 
 
 class LearningUnit(models.Model):
-
     STATUS_CHOICES = [
         ("not_started", "Not Started"),
         ("in_progress", "In Progress"),
