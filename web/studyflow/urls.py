@@ -10,6 +10,8 @@ api_patterns = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(api_patterns)),
+    path("pages/", include("pages.urls")),
+    path("accounts/", include("accounts.urls")),
 ]
 
 
