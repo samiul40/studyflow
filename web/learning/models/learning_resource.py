@@ -14,7 +14,6 @@ class LearningResource(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="learning_resources",
-        db_index=True,
     )
     title = models.CharField(max_length=255)
     resource_type = models.CharField(max_length=50, choices=RESOURCE_TYPES)
@@ -27,3 +26,10 @@ class LearningResource(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
+
+    @classmethod
+    def create_for_user(cls, user, form):
+        resource = form.save(commit=False)
+        resource.user = user
+        resource.save()
+        return resource
