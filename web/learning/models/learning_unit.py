@@ -31,6 +31,14 @@ class LearningUnit(models.Model):
     class Meta:
         ordering = ["order"]
         unique_together = ("resource", "order")
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(
+                    status__in=["not_started", "in_progress", "completed"]
+                ),
+                name="chk_status_valid",
+            )
+        ]
 
     def __str__(self):
         return f"{self.title} ({self.resource.title})"
