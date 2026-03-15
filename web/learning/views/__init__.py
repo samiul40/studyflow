@@ -1,15 +1,15 @@
 from .learning_resource import (
-    ResourceCreate,
-    ResourceDelete,
-    ResourceDetail,
-    ResourceList,
-    ResourceUpdate,
+    ResourceCreateView,
+    ResourceDeleteView,
+    ResourceDetailView,
+    ResourceListView,
+    ResourceUpdateView,
 )
 
 __all__ = [
-    "ResourceCreate",
-    "ResourceDelete",
-    "ResourceDetail",
-    "ResourceList",
-    "ResourceUpdate",
+    "ResourceCreateView",
+    "ResourceDeleteView",
+    "ResourceDetailView",
+    "ResourceListView",
+    "ResourceUpdateView",
 ]

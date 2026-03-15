@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 
 class LearningResource(models.Model):
@@ -27,9 +28,5 @@ class LearningResource(models.Model):
     def __str__(self):
         return f"{self.title} - {self.user.username}"
 
-    @classmethod
-    def create_for_user(cls, user, form):
-        resource = form.save(commit=False)
-        resource.user = user
-        resource.save()
-        return resource
+    def get_absolute_url(self):
+        return reverse("resources:resource_detail", kwargs={"pk": self.pk})
