@@ -4,9 +4,21 @@
 Learning Resources
 {% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active">
+            Resources
+        </li>
+    </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Learning Resources</h2>
 
