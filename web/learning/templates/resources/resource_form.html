@@ -8,6 +8,39 @@ Add Resource
 {% endif %}
 {% endblock %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item">
+            <a href="{% url 'index' %}">Home</a>
+        </li>
+
+        <li class="breadcrumb-item">
+            <a href="{% url 'resources:resource_list' %}">
+                Resources
+            </a>
+        </li>
+
+        {% if form.instance.pk %}
+        <li class="breadcrumb-item">
+            <a href="{% url 'resources:resource_detail' form.instance.pk %}">
+                {{ form.instance.title }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            Edit
+        </li>
+        {% else %}
+        <li class="breadcrumb-item active">
+            Add Resource
+        </li>
+        {% endif %}
+
+    </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
 
