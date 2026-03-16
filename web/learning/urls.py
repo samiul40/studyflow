@@ -1,6 +1,9 @@
 from django.urls import path
 
 from .views import (
+    LearningUnitCreateView,
+    LearningUnitDeleteView,
+    LearningUnitUpdateView,
     ResourceCreateView,
     ResourceDeleteView,
     ResourceDetailView,
@@ -16,4 +19,19 @@ urlpatterns = [
     path("create/", ResourceCreateView.as_view(), name="resource_create"),
     path("<int:pk>/edit/", ResourceUpdateView.as_view(), name="resource_update"),
     path("<int:pk>/delete/", ResourceDeleteView.as_view(), name="resource_delete"),
+    path(
+        "<int:resource_pk>/units/add/",
+        LearningUnitCreateView.as_view(),
+        name="unit_create",
+    ),
+    path(
+        "<int:resource_pk>/units/<int:unit_pk>/edit/",
+        LearningUnitUpdateView.as_view(),
+        name="unit_update",
+    ),
+    path(
+        "<int:resource_pk>/units/<int:unit_pk>/delete/",
+        LearningUnitDeleteView.as_view(),
+        name="unit_delete",
+    ),
 ]
