@@ -14,7 +14,8 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div
+                        class="d-flex justify-content-between align-items-start">
                         <div>
                             <h2 class="card-title">{{ resource.title }}</h2>
 
@@ -24,20 +25,24 @@
                         </div>
 
                         <div>
-                            <a href="{% url 'resources:resource_update' resource.pk %}" class="btn btn-sm btn-outline-secondary">
+                            <a
+                                href="{% url 'resources:resource_update' resource.pk %}"
+                                class="btn btn-sm btn-outline-secondary">
                                 Edit
                             </a>
 
-                            <a href="{% url 'resources:resource_delete' resource.pk %}" class="btn btn-sm btn-outline-danger">
-                                Delete
-                            </a>
+                            <button class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                                🗑 Delete
+                            </button>
                         </div>
                     </div>
 
                     {% if resource.description %}
-                        <p class="mt-3 text-muted">
-                            {{ resource.description }}
-                        </p>
+                    <p class="mt-3 text-muted">
+                        {{ resource.description }}
+                    </p>
                     {% endif %}
 
                 </div>
@@ -51,7 +56,8 @@
             <div class="card shadow-sm">
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div
+                        class="d-flex justify-content-between align-items-center mb-3">
                         <h4>Learning Units</h4>
 
                         <a href="#" class="btn btn-sm btn-primary">
@@ -60,34 +66,35 @@
                     </div>
 
                     {% if resource.learningunit_set.all %}
-                        <ul class="list-group">
+                    <ul class="list-group">
 
-                            {% for unit in resource.learningunit_set.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {% for unit in resource.learningunit_set.all %}
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center">
 
-                                    <div>
-                                        <strong>{{ unit.title }}</strong>
+                            <div>
+                                <strong>{{ unit.title }}</strong>
 
-                                        {% if unit.notes %}
-                                            <p class="small text-muted mb-0">
-                                                {{ unit.notes|truncatewords:15 }}
-                                            </p>
-                                        {% endif %}
-                                    </div>
+                                {% if unit.notes %}
+                                <p class="small text-muted mb-0">
+                                    {{ unit.notes|truncatewords:15 }}
+                                </p>
+                                {% endif %}
+                            </div>
 
-                                    <span class="badge bg-success">
-                                        {{ unit.get_status_display }}
-                                    </span>
+                            <span class="badge bg-success">
+                                {{ unit.get_status_display }}
+                            </span>
 
-                                </li>
-                            {% endfor %}
+                        </li>
+                        {% endfor %}
 
-                        </ul>
+                    </ul>
                     {% else %}
 
-                        <p class="text-muted">
-                            No learning units added yet.
-                        </p>
+                    <p class="text-muted">
+                        No learning units added yet.
+                    </p>
 
                     {% endif %}
 
@@ -98,5 +105,48 @@
 
     </div>
 
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Resource</h5>
+                <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Are you sure you want to delete
+                    <strong>{{ resource.title }}</strong>?
+                </p>
+                <p class="text-danger mb-0">
+                    This will also delete all learning units associated with
+                    this resource.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <form method="post"
+                    action="{% url 'resources:resource_delete' resource.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Delete Resource
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
 </div>
 {% endblock %}
