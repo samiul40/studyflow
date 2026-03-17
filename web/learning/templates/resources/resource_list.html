@@ -6,77 +6,76 @@ Learning Resources
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="{% url 'index' %}">Home</a>
-        </li>
-        <li class="breadcrumb-item active">
-            Resources
-        </li>
-    </ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'index' %}">Home</a>
+    </li>
+    <li class="breadcrumb-item active">
+      Resources
+    </li>
+  </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Learning Resources</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Learning Resources</h2>
 
-        <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
-            Add Resource
-        </a>
-    </div>
+    <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
+      Add Resource
+    </a>
+  </div>
 
-    {% if resources %}
-    <div class="row">
-        {% for resource in resources %}
-        <div class="col-md-4 mb-4">
+  {% if resources %}
+  <div class="row">
+    {% for resource in resources %}
+    <div class="col-md-4 mb-4">
 
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
 
-                    <h5 class="card-title">
-                        {{ resource.title }}
-                    </h5>
+          <h5 class="card-title">
+            {{ resource.title }}
+          </h5>
 
-                    <span class="badge bg-secondary mb-2">
-                        {{ resource.get_resource_type_display }}
-                    </span>
+          <span class="badge bg-secondary mb-2">
+            {{ resource.get_resource_type_display }}
+          </span>
 
-                    {% if resource.description %}
-                    <p class="card-text text-muted">
-                        {{ resource.description|truncatewords:20 }}
-                    </p>
-                    {% endif %}
+          {% if resource.description %}
+          <p class="card-text text-muted">
+            {{ resource.description|truncatewords:20 }}
+          </p>
+          {% endif %}
 
-                    <a href="{{ resource.get_absolute_url }}"
-                        class="btn btn-sm btn-outline-primary">
-                        View Details
-                    </a>
-
-                </div>
-
-                <div class="card-footer text-muted small">
-                    Added {{ resource.created_at|date:"d M Y" }}
-                </div>
-            </div>
+          <a href="{{ resource.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+            View Details
+          </a>
 
         </div>
-        {% endfor %}
+
+        <div class="card-footer text-muted small">
+          Added {{ resource.created_at|date:"d M Y" }}
+        </div>
+      </div>
+
     </div>
+    {% endfor %}
+  </div>
 
-    {% else %}
+  {% else %}
 
-    <div class="text-center mt-5">
-        <h4>No resources yet</h4>
-        <p class="text-muted">Start tracking your learning resources.</p>
+  <div class="text-center mt-5">
+    <h4>No resources yet</h4>
+    <p class="text-muted">Start tracking your learning resources.</p>
 
-        <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
-            Add your first resource
-        </a>
-    </div>
+    <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
+      Add your first resource
+    </a>
+  </div>
 
-    {% endif %}
+  {% endif %}
 
 </div>
 {% endblock %}
