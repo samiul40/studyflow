@@ -220,3 +220,5 @@ static_files
 .DS_Store
 DS_Store
 node_modules
+
+.prettierrc

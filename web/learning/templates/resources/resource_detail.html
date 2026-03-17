@@ -36,8 +36,7 @@
       <div class="card shadow-sm mb-4">
         <div class="card-body">
 
-          <div
-            class="d-flex justify-content-between align-items-start">
+          <div class="d-flex justify-content-between align-items-start">
             <div>
               <h2 class="card-title">{{ resource.title }}</h2>
 
@@ -47,14 +46,10 @@
             </div>
 
             <div>
-              <a
-                href="{% url 'resources:resource_update' resource.pk %}"
-                class="btn btn-sm btn-outline-secondary">
+              <a href="{% url 'resources:resource_update' resource.pk %}" class="btn btn-sm btn-outline-secondary">
                 Edit
               </a>
-              <button class="btn btn-sm btn-outline-danger"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteModal">
+              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                 Delete
               </button>
             </div>
@@ -77,13 +72,10 @@
       <div class="card shadow-sm">
         <div class="card-body">
 
-          <div
-            class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
             <h4>Learning Units</h4>
 
-            <button class="btn btn-sm btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#addUnitModal">
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
               Add Unit
             </button>
           </div>
@@ -92,8 +84,7 @@
           <ul class="list-group">
 
             {% for unit in resource.units.all %}
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
 
               {% include "resources/partials/_learning_unit_edit_modal.html" %}
               {% include "resources/partials/_learning_unit_delete_modal.html"
@@ -115,14 +106,12 @@
                   {{ unit.get_status_display }}
                 </span>
 
-                <button class="btn btn-sm btn-outline-secondary"
-                  data-bs-toggle="modal"
+                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
                   data-bs-target="#editUnitModal{{ unit.id }}">
                   Edit
                 </button>
 
-                <button class="btn btn-sm btn-outline-danger"
-                  data-bs-toggle="modal"
+                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
                   data-bs-target="#deleteUnitModal{{ unit.id }}">
                   Delete
                 </button>
@@ -156,8 +145,7 @@
 
       <div class="modal-header">
         <h5 class="modal-title">Delete Resource</h5>
-        <button type="button" class="btn-close"
-          data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -173,14 +161,11 @@
 
       <div class="modal-footer">
 
-        <button type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Cancel
         </button>
 
-        <form method="post"
-          action="{% url 'resources:resource_delete' resource.pk %}">
+        <form method="post" action="{% url 'resources:resource_delete' resource.pk %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">
             Delete Resource

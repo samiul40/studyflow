@@ -2,14 +2,12 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <form method="post"
-        action="{% url 'resources:unit_delete' resource.pk unit.pk %}">
+      <form method="post" action="{% url 'resources:unit_delete' resource.pk unit.pk %}">
         {% csrf_token %}
 
         <div class="modal-header">
           <h5 class="modal-title">Delete Unit</h5>
-          <button type="button" class="btn-close"
-            data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
         <div class="modal-body">
@@ -18,8 +16,7 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary"
-            data-bs-dismiss="modal">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
             Cancel
           </button>
           <button type="submit" class="btn btn-danger">

@@ -2,34 +2,29 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <form method="post"
-        action="{% url 'resources:unit_create' resource.pk %}">
+      <form method="post" action="{% url 'resources:unit_create' resource.pk %}">
         {% csrf_token %}
 
         <div class="modal-header">
           <h5 class="modal-title">Add Learning Unit</h5>
-          <button type="button" class="btn-close"
-            data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
         <div class="modal-body">
 
           <div class="mb-3">
             <label class="form-label">Title</label>
-            <input type="text" name="title" class="form-control"
-              required>
+            <input type="text" name="title" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Order</label>
-            <input type="number" name="order" class="form-control"
-              required>
+            <input type="number" name="order" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Duration (minutes)</label>
-            <input type="number" name="duration_minutes"
-              class="form-control">
+            <input type="number" name="duration_minutes" class="form-control">
           </div>
 
           <div class="mb-3">
@@ -40,8 +35,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary"
-            data-bs-dismiss="modal">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Cancel
           </button>
           <button type="submit" class="btn btn-primary">
