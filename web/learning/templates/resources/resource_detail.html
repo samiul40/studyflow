@@ -81,30 +81,37 @@
           </div>
 
           {% if resource.units.all %}
-          <ul class="list-group">
+          <ul id="unit-list" class="list-group">
 
             {% for unit in resource.units.all %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
+            <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ unit.id }}">
 
               {% include "resources/partials/_learning_unit_edit_modal.html" %}
-              {% include "resources/partials/_learning_unit_delete_modal.html"
-              %}
-
-              <div>
-                <strong>{{ unit.title }}</strong>
-
-                {% if unit.notes %}
-                <p class="small text-muted mb-0">
-                  {{ unit.notes|truncatewords:15 }}
-                </p>
-                {% endif %}
-              </div>
+              {% include "resources/partials/_learning_unit_delete_modal.html" %}
 
               <div class="d-flex align-items-center gap-2">
+
+                <span class="drag-handle">
+                  ⋮⋮
+                </span>
+
+                <div>
+                  <strong>{{ unit.title }}</strong>
+
+                  {% if unit.notes %}
+                  <p class="small text-muted mb-0">
+                    {{ unit.notes|truncatewords:15 }}
+                  </p>
+                  {% endif %}
+                </div>
 
                 <span class="badge bg-success">
                   {{ unit.get_status_display }}
                 </span>
+
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
 
                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
                   data-bs-target="#editUnitModal{{ unit.id }}">
@@ -178,4 +185,45 @@
   </div>
 </div>
 {% include "resources/partials/_learning_unit_create_modal.html" %}
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const unitList = document.getElementById("unit-list");
+
+    if (!unitList) return;
+
+    new Sortable(unitList, {
+      animation: 150,
+      handle: ".drag-handle",
+
+      onEnd: function () {
+
+        const order = [];
+
+        unitList.querySelectorAll("li").forEach((item, index) => {
+          order.push({
+            id: item.dataset.id,
+            order: index + 1
+          });
+        });
+
+        fetch("{% url 'resources:unit_reorder' resource.pk %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: JSON.stringify({ order: order })
+        });
+
+      }
+    });
+
+  });
+</script>
+
 {% endblock %}

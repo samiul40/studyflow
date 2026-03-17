@@ -1,6 +1,15 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+# import json
+# from django.http import JsonResponse
+# from django.views import View
+from django.db.models import Case, IntegerField, When
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from learning.forms import LearningUnitForm
@@ -74,3 +83,47 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
     def get_queryset(self):
         resource = self.get_resource()
         return LearningUnit.objects.filter(resource=resource)
+
+    def form_valid(self, form):
+        unit = self.get_object()
+        resource = unit.resource
+
+        response = super().form_valid(form)
+
+        units = list(LearningUnit.objects.filter(resource=resource).order_by("order"))
+
+        for index, unit in enumerate(units, start=1):
+            unit.order = index
+
+        LearningUnit.objects.bulk_update(units, ["order"])
+
+        return response
+
+
+class LearningUnitReorderView(LoginRequiredMixin, View):
+    """
+    Update learning unit order after drag-and-drop.
+    """
+
+    def post(self, request, resource_pk):
+
+        resource = get_object_or_404(
+            LearningResource,
+            pk=resource_pk,
+            user=request.user,
+        )
+
+        data = json.loads(request.body)
+
+        cases = []
+        ids = []
+
+        for item in data["order"]:
+            ids.append(item["id"])
+            cases.append(When(id=item["id"], then=item["order"]))
+
+        LearningUnit.objects.filter(resource=resource, id__in=ids).update(
+            order=Case(*cases, output_field=IntegerField())
+        )
+
+        return JsonResponse({"status": "ok"})

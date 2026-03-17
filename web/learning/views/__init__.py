@@ -8,6 +8,7 @@ from .learning_resource import (
 from .learning_unit import (
     LearningUnitCreateView,
     LearningUnitDeleteView,
+    LearningUnitReorderView,
     LearningUnitUpdateView,
 )
 
@@ -20,4 +21,5 @@ __all__ = [
     "LearningUnitCreateView",
     "LearningUnitDeleteView",
     "LearningUnitUpdateView",
+    "LearningUnitReorderView",
 ]
