@@ -2,7 +2,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <form method="post" action="{% url 'resources:unit_create' resource.pk %}">
+      <form method="post" action="{% url 'learning:unit_create' resource.pk %}">
         {% csrf_token %}
 
         <div class="modal-header">

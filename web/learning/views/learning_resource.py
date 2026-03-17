@@ -66,7 +66,7 @@ class ResourceCreateView(LoginRequiredMixin, CreateView):
     model = LearningResource
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
-    success_url = reverse_lazy("resources:resource_list")
+    success_url = reverse_lazy("learning:resource_list")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -90,4 +90,4 @@ class ResourceDeleteView(LoginRequiredMixin, UserResourceMixin, DeleteView):
 
     model = LearningResource
     template_name = "resources/resource_confirm_delete.html"
-    success_url = reverse_lazy("resources:resource_list")
+    success_url = reverse_lazy("learning:resource_list")

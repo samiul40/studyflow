@@ -29,4 +29,4 @@ class LearningResource(models.Model):
         return f"{self.title} - {self.user.username}"
 
     def get_absolute_url(self):
-        return reverse("resources:resource_detail", kwargs={"pk": self.pk})
+        return reverse("learning:resource_detail", kwargs={"pk": self.pk})

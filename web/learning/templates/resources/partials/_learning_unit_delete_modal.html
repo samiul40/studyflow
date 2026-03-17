@@ -2,7 +2,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <form method="post" action="{% url 'resources:unit_delete' resource.pk unit.pk %}">
+      <form method="post" action="{% url 'learning:unit_delete' resource.pk unit.pk %}">
         {% csrf_token %}
 
         <div class="modal-header">

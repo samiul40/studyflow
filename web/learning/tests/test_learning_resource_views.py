@@ -11,7 +11,7 @@ def test_resource_list_shows_user_resources(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
     baker.make(LearningResource)
 
-    url = reverse("resources:resource_list")
+    url = reverse("learning:resource_list")
     response = client_logged_in.get(url)
 
     assert response.status_code == 200
@@ -22,7 +22,7 @@ def test_resource_list_shows_user_resources(client_logged_in, user):
 def test_resource_detail_view(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
 
-    url = reverse("resources:resource_detail", args=[resource.pk])
+    url = reverse("learning:resource_detail", args=[resource.pk])
     response = client_logged_in.get(url)
 
     assert response.status_code == 200
@@ -30,7 +30,7 @@ def test_resource_detail_view(client_logged_in, user):
 
 
 def test_resource_create(client_logged_in, user):
-    url = reverse("resources:resource_create")
+    url = reverse("learning:resource_create")
 
     data = {
         "title": "New Learning Resource",
@@ -54,7 +54,7 @@ def test_resource_update(client_logged_in, user):
         resource_type="book",
     )
 
-    url = reverse("resources:resource_update", args=[resource.pk])
+    url = reverse("learning:resource_update", args=[resource.pk])
 
     data = {
         "title": "Updated Title",
@@ -73,7 +73,7 @@ def test_resource_update(client_logged_in, user):
 def test_resource_delete(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
 
-    url = reverse("resources:resource_delete", args=[resource.pk])
+    url = reverse("learning:resource_delete", args=[resource.pk])
 
     response = client_logged_in.post(url)
 
@@ -84,7 +84,7 @@ def test_resource_delete(client_logged_in, user):
 def test_user_cannot_access_other_users_resource(client_logged_in):
     other_resource = baker.make(LearningResource)
 
-    url = reverse("resources:resource_detail", args=[other_resource.pk])
+    url = reverse("learning:resource_detail", args=[other_resource.pk])
 
     response = client_logged_in.get(url)
 
@@ -94,7 +94,7 @@ def test_user_cannot_access_other_users_resource(client_logged_in):
 def test_user_cannot_update_other_users_resource(client_logged_in):
     other_resource = baker.make(LearningResource)
 
-    url = reverse("resources:resource_update", args=[other_resource.pk])
+    url = reverse("learning:resource_update", args=[other_resource.pk])
     response = client_logged_in.post(url, {"title": "Hacked", "resource_type": "book"})
 
     assert response.status_code == 404
@@ -103,7 +103,7 @@ def test_user_cannot_update_other_users_resource(client_logged_in):
 def test_user_cannot_delete_other_users_resource(client_logged_in):
     other_resource = baker.make(LearningResource)
 
-    url = reverse("resources:resource_delete", args=[other_resource.pk])
+    url = reverse("learning:resource_delete", args=[other_resource.pk])
     response = client_logged_in.post(url)
 
     assert response.status_code == 404
@@ -112,11 +112,11 @@ def test_user_cannot_delete_other_users_resource(client_logged_in):
 @pytest.mark.parametrize(
     "url",
     [
-        lambda: reverse("resources:resource_list"),
-        lambda: reverse("resources:resource_create"),
-        lambda: reverse("resources:resource_detail", args=[999]),
-        lambda: reverse("resources:resource_update", args=[999]),
-        lambda: reverse("resources:resource_delete", args=[999]),
+        lambda: reverse("learning:resource_list"),
+        lambda: reverse("learning:resource_create"),
+        lambda: reverse("learning:resource_detail", args=[999]),
+        lambda: reverse("learning:resource_update", args=[999]),
+        lambda: reverse("learning:resource_delete", args=[999]),
     ],
 )
 def test_resource_views_require_login(client, url):

@@ -13,7 +13,7 @@
     </li>
 
     <li class="breadcrumb-item">
-      <a href="{% url 'resources:resource_list' %}">
+      <a href="{% url 'learning:resource_list' %}">
         Resources
       </a>
     </li>
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-              <a href="{% url 'resources:resource_update' resource.pk %}" class="btn btn-sm btn-outline-secondary">
+              <a href="{% url 'learning:resource_update' resource.pk %}" class="btn btn-sm btn-outline-secondary">
                 Edit
               </a>
               <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -172,7 +172,7 @@
           Cancel
         </button>
 
-        <form method="post" action="{% url 'resources:resource_delete' resource.pk %}">
+        <form method="post" action="{% url 'learning:resource_delete' resource.pk %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">
             Delete Resource
@@ -211,7 +211,7 @@
           });
         });
 
-        fetch("{% url 'resources:unit_reorder' resource.pk %}", {
+        fetch("{% url 'learning:unit_reorder' resource.pk %}", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
