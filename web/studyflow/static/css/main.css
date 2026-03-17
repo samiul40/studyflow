@@ -1,0 +1,18 @@
+.drag-handle {
+    cursor: grab;
+    color: #6c757d;
+    font-size: 18px;
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.drag-handle:hover {
+    color: #000;
+}
+
+#unit-list li:hover {
+    background-color: #f8f9fa;
+}

@@ -16,7 +16,7 @@ class LearningUnit(models.Model):
         related_name="units",
     )
     title = models.CharField(max_length=255)
-    order = models.PositiveIntegerField()
+    order = models.PositiveIntegerField(null=True, blank=True)
     duration_minutes = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(
         max_length=20,
@@ -30,7 +30,6 @@ class LearningUnit(models.Model):
 
     class Meta:
         ordering = ["order"]
-        unique_together = ("resource", "order")
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(
@@ -42,3 +41,15 @@ class LearningUnit(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.resource.title})"
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            last_unit = (
+                LearningUnit.objects.filter(resource=self.resource)
+                .order_by("-order")
+                .first()
+            )
+
+            self.order = 1 if not last_unit else last_unit.order + 1
+
+        super().save(*args, **kwargs)

@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     LearningUnitCreateView,
     LearningUnitDeleteView,
+    LearningUnitReorderView,
     LearningUnitUpdateView,
     ResourceCreateView,
     ResourceDeleteView,
@@ -33,5 +34,10 @@ urlpatterns = [
         "<int:resource_pk>/units/<int:unit_pk>/delete/",
         LearningUnitDeleteView.as_view(),
         name="unit_delete",
+    ),
+    path(
+        "<int:resource_pk>/units/reorder/",
+        LearningUnitReorderView.as_view(),
+        name="unit_reorder",
     ),
 ]
