@@ -20,7 +20,19 @@ class UserResourceMixin(LoginRequiredMixin):
         )
 
 
-class LearningUnitCreateView(UserResourceMixin, CreateView):
+class ResourceRedirectMixin:
+    """
+    Redirects to the parent resource detail page after a successful action.
+    """
+
+    def get_success_url(self):
+        return reverse(
+            "resources:resource_detail",
+            kwargs={"pk": self.kwargs["resource_pk"]},
+        )
+
+
+class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateView):
     """
     Create a learning unit within a resource.
     """
@@ -34,14 +46,8 @@ class LearningUnitCreateView(UserResourceMixin, CreateView):
         form.instance.resource = resource
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse(
-            "resources:resource_detail",
-            kwargs={"pk": self.kwargs["resource_pk"]},
-        )
 
-
-class LearningUnitUpdateView(UserResourceMixin, UpdateView):
+class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateView):
     """
     Update an existing learning unit.
     """
@@ -55,14 +61,8 @@ class LearningUnitUpdateView(UserResourceMixin, UpdateView):
         resource = self.get_resource()
         return LearningUnit.objects.filter(resource=resource)
 
-    def get_success_url(self):
-        return reverse(
-            "resources:resource_detail",
-            kwargs={"pk": self.kwargs["resource_pk"]},
-        )
 
-
-class LearningUnitDeleteView(UserResourceMixin, DeleteView):
+class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteView):
     """
     Delete a learning unit.
     """
@@ -74,9 +74,3 @@ class LearningUnitDeleteView(UserResourceMixin, DeleteView):
     def get_queryset(self):
         resource = self.get_resource()
         return LearningUnit.objects.filter(resource=resource)
-
-    def get_success_url(self):
-        return reverse(
-            "resources:resource_detail",
-            kwargs={"pk": self.kwargs["resource_pk"]},
-        )
