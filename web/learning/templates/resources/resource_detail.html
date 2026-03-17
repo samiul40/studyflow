@@ -6,168 +6,191 @@
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb">
+  <ol class="breadcrumb">
 
-        <li class="breadcrumb-item">
-            <a href="{% url 'index' %}">Home</a>
-        </li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'index' %}">Home</a>
+    </li>
 
-        <li class="breadcrumb-item">
-            <a href="{% url 'resources:resource_list' %}">
-                Resources
-            </a>
-        </li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'resources:resource_list' %}">
+        Resources
+      </a>
+    </li>
 
-        <li class="breadcrumb-item active">
-            {{ resource.title }}
-        </li>
+    <li class="breadcrumb-item active">
+      {{ resource.title }}
+    </li>
 
-    </ol>
+  </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <div class="row">
-        <div class="col-md-8">
+  <div class="row">
+    <div class="col-md-8">
 
-            <!-- Resource Info -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
+      <!-- Resource Info -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
 
-                    <div
-                        class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h2 class="card-title">{{ resource.title }}</h2>
+          <div
+            class="d-flex justify-content-between align-items-start">
+            <div>
+              <h2 class="card-title">{{ resource.title }}</h2>
 
-                            <span class="badge bg-secondary">
-                                {{ resource.get_resource_type_display }}
-                            </span>
-                        </div>
-
-                        <div>
-                            <a
-                                href="{% url 'resources:resource_update' resource.pk %}"
-                                class="btn btn-sm btn-outline-secondary">
-                                Edit
-                            </a>
-                            <button class="btn btn-sm btn-outline-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal">
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-
-                    {% if resource.description %}
-                    <p class="mt-3 text-muted">
-                        {{ resource.description }}
-                    </p>
-                    {% endif %}
-
-                </div>
-
-                <div class="card-footer text-muted small">
-                    Created {{ resource.created_at|date:"d M Y" }}
-                </div>
+              <span class="badge bg-secondary">
+                {{ resource.get_resource_type_display }}
+              </span>
             </div>
 
-            <!-- Learning Units -->
-            <div class="card shadow-sm">
-                <div class="card-body">
-
-                    <div
-                        class="d-flex justify-content-between align-items-center mb-3">
-                        <h4>Learning Units</h4>
-
-                        <a href="#" class="btn btn-sm btn-primary">
-                            Add Unit
-                        </a>
-                    </div>
-
-                    {% if resource.units.all %}
-                    <ul class="list-group">
-
-                        {% for unit in resource.units.all %}
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center">
-
-                            <div>
-                                <strong>{{ unit.title }}</strong>
-
-                                {% if unit.notes %}
-                                <p class="small text-muted mb-0">
-                                    {{ unit.notes|truncatewords:15 }}
-                                </p>
-                                {% endif %}
-                            </div>
-
-                            <span class="badge bg-success">
-                                {{ unit.get_status_display }}
-                            </span>
-
-                        </li>
-                        {% endfor %}
-
-                    </ul>
-                    {% else %}
-
-                    <p class="text-muted">
-                        No learning units added yet.
-                    </p>
-
-                    {% endif %}
-
-                </div>
+            <div>
+              <a
+                href="{% url 'resources:resource_update' resource.pk %}"
+                class="btn btn-sm btn-outline-secondary">
+                Edit
+              </a>
+              <button class="btn btn-sm btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal">
+                Delete
+              </button>
             </div>
+          </div>
+
+          {% if resource.description %}
+          <p class="mt-3 text-muted">
+            {{ resource.description }}
+          </p>
+          {% endif %}
 
         </div>
 
+        <div class="card-footer text-muted small">
+          Created {{ resource.created_at|date:"d M Y" }}
+        </div>
+      </div>
+
+      <!-- Learning Units -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <div
+            class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Learning Units</h4>
+
+            <button class="btn btn-sm btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addUnitModal">
+              Add Unit
+            </button>
+          </div>
+
+          {% if resource.units.all %}
+          <ul class="list-group">
+
+            {% for unit in resource.units.all %}
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center">
+
+              {% include "resources/partials/_learning_unit_edit_modal.html" %}
+              {% include "resources/partials/_learning_unit_delete_modal.html"
+              %}
+
+              <div>
+                <strong>{{ unit.title }}</strong>
+
+                {% if unit.notes %}
+                <p class="small text-muted mb-0">
+                  {{ unit.notes|truncatewords:15 }}
+                </p>
+                {% endif %}
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+
+                <span class="badge bg-success">
+                  {{ unit.get_status_display }}
+                </span>
+
+                <button class="btn btn-sm btn-outline-secondary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editUnitModal{{ unit.id }}">
+                  Edit
+                </button>
+
+                <button class="btn btn-sm btn-outline-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteUnitModal{{ unit.id }}">
+                  Delete
+                </button>
+
+              </div>
+
+            </li>
+            {% endfor %}
+
+          </ul>
+          {% else %}
+
+          <p class="text-muted">
+            No learning units added yet.
+          </p>
+
+          {% endif %}
+
+        </div>
+      </div>
+
     </div>
+
+  </div>
 
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Resource</h5>
-                <button type="button" class="btn-close"
-                    data-bs-dismiss="modal"></button>
-            </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Resource</h5>
+        <button type="button" class="btn-close"
+          data-bs-dismiss="modal"></button>
+      </div>
 
-            <div class="modal-body">
-                <p>
-                    Are you sure you want to delete
-                    <strong>{{ resource.title }}</strong>?
-                </p>
-                <p class="text-danger mb-0">
-                    This will also delete all learning units associated with
-                    this resource.
-                </p>
-            </div>
+      <div class="modal-body">
+        <p>
+          Are you sure you want to delete
+          <strong>{{ resource.title }}</strong>?
+        </p>
+        <p class="text-danger mb-0">
+          This will also delete all learning units associated with
+          this resource.
+        </p>
+      </div>
 
-            <div class="modal-footer">
+      <div class="modal-footer">
 
-                <button type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                    Cancel
-                </button>
+        <button type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+          Cancel
+        </button>
 
-                <form method="post"
-                    action="{% url 'resources:resource_delete' resource.pk %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        Delete Resource
-                    </button>
-                </form>
+        <form method="post"
+          action="{% url 'resources:resource_delete' resource.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            Delete Resource
+          </button>
+        </form>
 
-            </div>
+      </div>
 
-        </div>
     </div>
+  </div>
 </div>
+{% include "resources/partials/_learning_unit_create_modal.html" %}
 {% endblock %}

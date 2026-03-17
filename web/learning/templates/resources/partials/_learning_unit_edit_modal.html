@@ -1,0 +1,45 @@
+<div class="modal fade" id="editUnitModal{{ unit.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="post"
+        action="{% url 'resources:unit_update' resource.pk unit.pk %}">
+        {% csrf_token %}
+
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Learning Unit</h5>
+          <button type="button" class="btn-close"
+            data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <input type="text"
+            name="title"
+            value="{{ unit.title }}"
+            class="form-control mb-3">
+
+          <input type="number"
+            name="order"
+            value="{{ unit.order }}"
+            class="form-control mb-3">
+
+          <textarea name="notes"
+            class="form-control">{{ unit.notes }}</textarea>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Save
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
