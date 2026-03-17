@@ -22,10 +22,20 @@ Learning Resources
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Learning Resources</h2>
 
+    {% if not search_query or resources %}
     <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
       Add Resource
     </a>
+    {% endif %}
   </div>
+
+  <!-- Search -->
+  <form method="get" class="mb-4" id="searchForm">
+    <div class="input-group">
+      <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search resources..."
+        value="{{ search_query }}">
+    </div>
+  </form>
 
   {% if resources %}
   <div class="row">
@@ -78,4 +88,27 @@ Learning Resources
   {% endif %}
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const searchForm = document.getElementById("searchForm");
+
+  let debounceTimer;
+
+  searchInput.addEventListener("input", function () {
+    clearTimeout(debounceTimer);
+
+    debounceTimer = setTimeout(() => {
+      if (searchInput.value.trim() === "") {
+        window.location.href = window.location.pathname;
+      } else {
+        searchForm.submit();
+      }
+    }, 400);
+  });
+</script>
+
 {% endblock %}
