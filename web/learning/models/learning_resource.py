@@ -19,6 +19,7 @@ class LearningResource(models.Model):
     title = models.CharField(max_length=255)
     resource_type = models.CharField(max_length=50, choices=RESOURCE_TYPES)
     description = models.TextField(blank=True)
+    url = models.URLField(blank=True, help_text="Optional link to the resource")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
