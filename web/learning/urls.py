@@ -12,7 +12,7 @@ from .views import (
     ResourceUpdateView,
 )
 
-app_name = "resources"
+app_name = "learning"
 
 urlpatterns = [
     path("", ResourceListView.as_view(), name="resource_list"),

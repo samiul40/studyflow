@@ -36,7 +36,7 @@ class ResourceRedirectMixin:
 
     def get_success_url(self):
         return reverse(
-            "resources:resource_detail",
+            "learning:resource_detail",
             kwargs={"pk": self.kwargs["resource_pk"]},
         )
 

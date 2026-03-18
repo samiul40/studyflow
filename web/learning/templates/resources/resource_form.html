@@ -17,14 +17,14 @@ Add Resource
     </li>
 
     <li class="breadcrumb-item">
-      <a href="{% url 'resources:resource_list' %}">
+      <a href="{% url 'learning:resource_list' %}">
         Resources
       </a>
     </li>
 
     {% if form.instance.pk %}
     <li class="breadcrumb-item">
-      <a href="{% url 'resources:resource_detail' form.instance.pk %}">
+      <a href="{% url 'learning:resource_detail' form.instance.pk %}">
         {{ form.instance.title }}
       </a>
     </li>
@@ -78,7 +78,7 @@ Add Resource
 
             <div class="d-flex justify-content-between">
 
-              <a href="{% url 'resources:resource_list' %}" class="btn btn-secondary">
+              <a href="{% url 'learning:resource_list' %}" class="btn btn-secondary">
                 Cancel
               </a>
 

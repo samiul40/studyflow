@@ -23,7 +23,7 @@ Learning Resources
     <h2>Learning Resources</h2>
 
     {% if not search_query or resources %}
-    <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
+    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
       Add Resource
     </a>
     {% endif %}
@@ -80,7 +80,7 @@ Learning Resources
     <h4>No resources yet</h4>
     <p class="text-muted">Start tracking your learning resources.</p>
 
-    <a href="{% url 'resources:resource_create' %}" class="btn btn-primary">
+    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
       Add your first resource
     </a>
   </div>
