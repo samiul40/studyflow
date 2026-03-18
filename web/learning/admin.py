@@ -1,6 +1,8 @@
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from django.contrib import admin
 
+from learning.services.dashboard import get_dashboard_stats
+
 from .models import LearningResource, LearningUnit
 
 
@@ -100,3 +102,20 @@ class LearningUnitAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+original_index = admin.site.index
+
+
+def custom_admin_index(request, extra_context=None):
+    stats = get_dashboard_stats()
+
+    if extra_context is None:
+        extra_context = {}
+
+    extra_context.update(stats)
+
+    return original_index(request, extra_context=extra_context)
+
+
+admin.site.index = custom_admin_index
