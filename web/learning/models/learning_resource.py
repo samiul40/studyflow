@@ -31,3 +31,29 @@ class LearningResource(models.Model):
 
     def get_absolute_url(self):
         return reverse("learning:resource_detail", kwargs={"pk": self.pk})
+
+    @property
+    def completion_percentage(self):
+        total = self.units.count()
+        completed = self.units.filter(status="completed").count()
+        return int((completed / total) * 100) if total > 0 else 0
+
+    @property
+    def total_units(self):
+        return self.units.count()
+
+    @property
+    def completed_units(self):
+        return self.units.filter(status="completed").count()
+
+    @property
+    def incomplete_units(self):
+        return self.total_units - self.completed_units
+
+    @property
+    def status_label(self):
+        if self.completion_percentage == 100:
+            return "Completed"
+        elif self.completion_percentage > 0:
+            return "In Progress"
+        return "Not Started"
