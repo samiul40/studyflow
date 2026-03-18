@@ -1,10 +1,6 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-# import json
-# from django.http import JsonResponse
-# from django.views import View
 from django.db.models import Case, IntegerField, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -48,7 +44,6 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
 
     model = LearningUnit
     form_class = LearningUnitForm
-    template_name = "units/unit_form.html"
 
     def form_valid(self, form):
         resource = self.get_resource()
@@ -63,7 +58,6 @@ class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateVie
 
     model = LearningUnit
     form_class = LearningUnitForm
-    template_name = "units/unit_form.html"
     pk_url_kwarg = "unit_pk"
 
     def get_queryset(self):
@@ -77,7 +71,6 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
     """
 
     model = LearningUnit
-    template_name = "units/unit_confirm_delete.html"
     pk_url_kwarg = "unit_pk"
 
     def get_queryset(self):
