@@ -61,20 +61,16 @@ Add Resource
           <form method="post">
             {% csrf_token %}
 
-            <div class="mb-3">
-              <label class="form-label">Title</label>
-              {{ form.title }}
+            {% if form.errors %}
+            <div class="alert alert-danger">
+              Please fix the errors below.
             </div>
+            {% endif %}
 
-            <div class="mb-3">
-              <label class="form-label">Resource Type</label>
-              {{ form.resource_type }}
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              {{ form.description }}
-            </div>
+            {% include "components/_form_field.html" with field=form.title %}
+            {% include "components/_form_field.html" with field=form.resource_type %}
+            {% include "components/_form_field.html" with field=form.description %}
+            {% include "components/_form_field.html" with field=form.url %}
 
             <div class="d-flex justify-content-between">
 

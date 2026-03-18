@@ -61,6 +61,12 @@
           </p>
           {% endif %}
 
+          {% if resource.url %}
+          <a href="{{ resource.url }}" target="_blank" class="btn btn-primary mt-2">
+            Open Resource
+          </a>
+          {% endif %}
+
         </div>
 
         <div class="card-footer text-muted small">
