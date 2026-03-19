@@ -10,6 +10,7 @@ from .views import (
     ResourceDetailView,
     ResourceListView,
     ResourceUpdateView,
+    dashboard_view,
 )
 
 app_name = "learning"
@@ -40,4 +41,5 @@ urlpatterns = [
         LearningUnitReorderView.as_view(),
         name="unit_reorder",
     ),
+    path("dashboard/", dashboard_view, name="dashboard"),
 ]

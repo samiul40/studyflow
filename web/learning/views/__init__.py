@@ -1,3 +1,4 @@
+from .dashboard import dashboard_view
 from .learning_resource import (
     ResourceCreateView,
     ResourceDeleteView,
@@ -22,4 +23,5 @@ __all__ = [
     "LearningUnitDeleteView",
     "LearningUnitUpdateView",
     "LearningUnitReorderView",
+    "dashboard_view",
 ]
