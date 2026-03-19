@@ -18,7 +18,7 @@ def test_valid_login_redirects(client, user):
     res = client.post(url, {"username": user.username, "password": "12345"})
 
     assert res.status_code == 302
-    assert res.url == reverse("index")
+    assert res.url == reverse("learning:dashboard")
 
 
 def test_invalid_login(client, user):
