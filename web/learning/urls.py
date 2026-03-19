@@ -4,6 +4,7 @@ from .views import (
     LearningUnitCreateView,
     LearningUnitDeleteView,
     LearningUnitReorderView,
+    LearningUnitToggleStatusView,
     LearningUnitUpdateView,
     ResourceCreateView,
     ResourceDeleteView,
@@ -40,6 +41,11 @@ urlpatterns = [
         "<int:resource_pk>/units/reorder/",
         LearningUnitReorderView.as_view(),
         name="unit_reorder",
+    ),
+    path(
+        "units/<int:pk>/toggle-status/",
+        LearningUnitToggleStatusView.as_view(),
+        name="unit_toggle_status",
     ),
     path("dashboard/", dashboard_view, name="dashboard"),
 ]

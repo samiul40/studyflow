@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Case, IntegerField, When
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
@@ -22,6 +22,19 @@ class UserResourceMixin(LoginRequiredMixin):
             LearningResource,
             pk=self.kwargs["resource_pk"],
             user=self.request.user,
+        )
+
+
+class UserUnitMixin(LoginRequiredMixin):
+    """
+    Ensures the learning unit belongs to the logged-in user.
+    """
+
+    def get_unit(self):
+        return get_object_or_404(
+            LearningUnit,
+            pk=self.kwargs["pk"],
+            resource__user=self.request.user,
         )
 
 
@@ -93,19 +106,13 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
         return response
 
 
-class LearningUnitReorderView(LoginRequiredMixin, View):
+class LearningUnitReorderView(UserResourceMixin, View):
     """
     Update learning unit order after drag-and-drop.
     """
 
     def post(self, request, resource_pk):
-
-        resource = get_object_or_404(
-            LearningResource,
-            pk=resource_pk,
-            user=request.user,
-        )
-
+        resource = self.get_resource()
         data = json.loads(request.body)
 
         cases = []
@@ -120,3 +127,17 @@ class LearningUnitReorderView(LoginRequiredMixin, View):
         )
 
         return JsonResponse({"status": "ok"})
+
+
+class LearningUnitToggleStatusView(UserUnitMixin, View):
+    def post(self, request, pk):
+        unit = self.get_unit()
+
+        if unit.status == "completed":
+            unit.status = "not_started"
+        else:
+            unit.status = "completed"
+
+        unit.save()
+
+        return redirect(request.META.get("HTTP_REFERER", "/"))

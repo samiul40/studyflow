@@ -137,6 +137,7 @@ def test_learning_unit_reorder(client_logged_in, user):
         lambda resource: reverse(
             "learning:unit_reorder", kwargs={"resource_pk": resource.pk}
         ),
+        lambda resource: reverse("learning:unit_toggle_status", kwargs={"pk": 1}),
     ],
 )
 def test_learning_unit_views_require_login(client, url):
@@ -146,3 +147,50 @@ def test_learning_unit_views_require_login(client, url):
 
     assert response.status_code == 302
     assert "/login/" in response.url
+
+
+def test_learning_unit_toggle_status_marks_completed(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user)
+    unit = baker.make(
+        LearningUnit,
+        resource=resource,
+        status="not_started",
+    )
+
+    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+
+    response = client_logged_in.post(url)
+
+    unit.refresh_from_db()
+
+    assert response.status_code == 302
+    assert unit.status == "completed"
+
+
+def test_learning_unit_toggle_status_marks_not_started(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user)
+    unit = baker.make(
+        LearningUnit,
+        resource=resource,
+        status="completed",
+    )
+
+    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+
+    response = client_logged_in.post(url)
+
+    unit.refresh_from_db()
+
+    assert response.status_code == 302
+    assert unit.status == "not_started"
+
+
+def test_user_cannot_toggle_other_users_unit(client_logged_in):
+    other_resource = baker.make(LearningResource)
+    unit = baker.make(LearningUnit, resource=other_resource)
+
+    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+
+    response = client_logged_in.post(url)
+
+    assert response.status_code == 404
