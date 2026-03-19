@@ -74,6 +74,68 @@
         </div>
       </div>
 
+      <!-- Progress Stats -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+          <h5 class="mb-3">Progress</h5>
+
+          <!-- Progress Bar -->
+          <div class="progress mb-3" style="height: 20px;">
+            <div
+              class="progress-bar 
+              {% if completion_percentage == 100 %} bg-success 
+              {% elif completion_percentage > 0 %} bg-primary 
+              {% else %} bg-secondary 
+              {% endif %}"
+              role="progressbar" style="width: {{ completion_percentage }}%;">
+              {{ completion_percentage }}%
+            </div>
+          </div>
+
+          <div class="row text-center">
+
+            <div class="col">
+              <h6>Completed</h6>
+              <p class="mb-0 text-success">{{ completed_units }}</p>
+            </div>
+
+            <div class="col">
+              <h6>Remaining</h6>
+              <p class="mb-0 text-warning">{{ remaining_units }}</p>
+            </div>
+
+            <div class="col">
+              <h6>Total Units</h6>
+              <p class="mb-0">{{ total_units }}</p>
+            </div>
+
+          </div>
+
+          <hr>
+
+          <div class="row text-center">
+
+            <div class="col">
+              <h6>Completed Time</h6>
+              <p class="mb-0 text-success">{{ completed_duration }} mins</p>
+            </div>
+
+            <div class="col">
+              <h6>Remaining Time</h6>
+              <p class="mb-0 text-warning">{{ remaining_duration }} mins</p>
+            </div>
+
+            <div class="col">
+              <h6>Total Time</h6>
+              <p class="mb-0">{{ total_duration }} mins</p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
       <!-- Learning Units -->
       <div class="card shadow-sm">
         <div class="card-body">
@@ -102,7 +164,8 @@
                 </span>
 
                 <div>
-                  <strong>{{ unit.title }}</strong> {% if unit.duration_minutes %} - {{ unit.duration_minutes }} mins {% endif %}
+                  <strong>{{ unit.title }}</strong> {% if unit.duration_minutes %} - {{ unit.duration_minutes }} mins {%
+                  endif %}
 
                   {% if unit.notes %}
                   <p class="small text-muted mb-0">
@@ -115,8 +178,8 @@
                   {% csrf_token %}
 
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" 
-                      {% if unit.status == "completed" %} checked {% endif %}>
+                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" {% if
+                      unit.status=="completed" %} checked {% endif %}>
                   </div>
                 </form>
                 <span class="badge 
