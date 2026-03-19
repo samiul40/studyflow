@@ -129,15 +129,17 @@ class LearningUnitReorderView(UserResourceMixin, View):
         return JsonResponse({"status": "ok"})
 
 
-class LearningUnitToggleStatusView(UserUnitMixin, View):
+class LearningUnitUpdateStatusView(UserUnitMixin, View):
     def post(self, request, pk):
         unit = self.get_unit()
 
-        if unit.status == "completed":
-            unit.status = "not_started"
-        else:
-            unit.status = "completed"
+        new_status = request.POST.get("status")
 
-        unit.save()
+        if (
+            new_status in ["not_started", "in_progress", "completed"]
+            and unit.status != new_status
+        ):
+            unit.status = new_status
+            unit.save()
 
-        return redirect(request.META.get("HTTP_REFERER", "/"))
+        return redirect(unit.resource.get_absolute_url())

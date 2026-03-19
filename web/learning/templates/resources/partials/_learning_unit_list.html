@@ -1,0 +1,95 @@
+<div class="card shadow-sm">
+  <div class="card-body">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="fw-semibold mb-0">Learning Units</h4>
+
+      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
+        Add Unit
+      </button>
+    </div>
+
+    {% if units %}
+    <ul id="unit-list" class="list-group">
+
+      {% for unit in units %}
+      <li class="list-group-item py-3 d-flex align-items-start" data-id="{{ unit.id }}">
+
+        <!-- Drag handle -->
+        <span class="drag-handle me-3 mt-1">
+          ⋮⋮
+        </span>
+
+        <!-- Main content -->
+        <div class="d-flex justify-content-between align-items-start w-100">
+
+          <!-- LEFT SIDE -->
+          <div>
+            <div class="fw-semibold">
+              {{ unit.title }}
+              {% if unit.duration_minutes %}
+              <span class="text-muted small">• {{ unit.duration_minutes }} mins</span>
+              {% endif %}
+            </div>
+
+            {% if unit.notes %}
+            <div class="text-muted small">
+              {{ unit.notes|truncatewords:12 }}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- RIGHT SIDE -->
+          <div class="d-flex align-items-center gap-2">
+
+            <!-- Status dropdown -->
+            <form method="post" action="{% url 'learning:unit_update_status' unit.id %}">
+              {% csrf_token %}
+              <select name="status" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+
+                <option value="not_started" {% if unit.status == "not_started" %}selected{% endif %}>
+                  Not Started
+                </option>
+
+                <option value="in_progress" {% if unit.status == "in_progress" %}selected{% endif %}>
+                  In Progress
+                </option>
+
+                <option value="completed" {% if unit.status == "completed" %}selected{% endif %}>
+                  Completed
+                </option>
+
+              </select>
+            </form>
+
+            <!-- Actions -->
+            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+              data-bs-target="#editUnitModal{{ unit.id }}">
+              Edit
+            </button>
+
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+              data-bs-target="#deleteUnitModal{{ unit.id }}">
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+
+        {% include "resources/partials/_learning_unit_edit_modal.html" %}
+        {% include "resources/partials/_learning_unit_delete_modal.html" %}
+
+      </li>
+      {% endfor %}
+
+    </ul>
+
+    {% else %}
+    <p class="text-muted">
+      No learning units added yet.
+    </p>
+    {% endif %}
+
+  </div>
+</div>

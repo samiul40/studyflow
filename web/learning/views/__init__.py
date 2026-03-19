@@ -10,7 +10,7 @@ from .learning_unit import (
     LearningUnitCreateView,
     LearningUnitDeleteView,
     LearningUnitReorderView,
-    LearningUnitToggleStatusView,
+    LearningUnitUpdateStatusView,
     LearningUnitUpdateView,
 )
 
@@ -24,6 +24,6 @@ __all__ = [
     "LearningUnitDeleteView",
     "LearningUnitUpdateView",
     "LearningUnitReorderView",
-    "LearningUnitToggleStatusView",
+    "LearningUnitUpdateStatusView",
     "dashboard_view",
 ]
