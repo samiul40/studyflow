@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -77,6 +78,7 @@ class ResourceCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        messages.success(self.request, "Resource created successfully.")
         return super().form_valid(form)
 
 
@@ -89,6 +91,10 @@ class ResourceUpdateView(LoginRequiredMixin, UserResourceMixin, UpdateView):
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
 
+    def form_valid(self, form):
+        messages.success(self.request, "Resource updated successfully.")
+        return super().form_valid(form)
+
 
 class ResourceDeleteView(LoginRequiredMixin, UserResourceMixin, DeleteView):
     """
@@ -98,3 +104,11 @@ class ResourceDeleteView(LoginRequiredMixin, UserResourceMixin, DeleteView):
     model = LearningResource
     template_name = "resources/resource_confirm_delete.html"
     success_url = reverse_lazy("learning:resource_list")
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Resource deleted successfully.")
+        return super().delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Resource deleted successfully.")
+        return super().form_valid(form)

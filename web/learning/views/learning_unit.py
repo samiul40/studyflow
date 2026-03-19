@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Case, IntegerField, Max, When
 from django.http import JsonResponse
@@ -61,6 +62,7 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
     def form_valid(self, form):
         resource = self.get_resource()
         form.instance.resource = resource
+        messages.success(self.request, "Unit created successfully.")
         return super().form_valid(form)
 
 
@@ -95,6 +97,8 @@ class LearningUnitBulkCreateView(UserResourceMixin, View):
 
         LearningUnit.objects.bulk_create(new_units)
 
+        messages.success(request, f"{len(new_units)} units added successfully.")
+
         return redirect(resource.get_absolute_url())
 
 
@@ -110,6 +114,10 @@ class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateVie
     def get_queryset(self):
         resource = self.get_resource()
         return LearningUnit.objects.filter(resource=resource)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Unit status updated.")
+        return super().form_valid(form)
 
 
 class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteView):
@@ -127,6 +135,8 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
     def form_valid(self, form):
         unit = self.get_object()
         resource = unit.resource
+
+        messages.success(self.request, "Unit deleted successfully.")
 
         response = super().form_valid(form)
 
@@ -175,5 +185,7 @@ class LearningUnitUpdateStatusView(UserUnitMixin, View):
         ):
             unit.status = new_status
             unit.save()
+
+        messages.success(request, "Unit status updated.")
 
         return redirect(unit.resource.get_absolute_url())
