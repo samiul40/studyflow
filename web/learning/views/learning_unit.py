@@ -1,7 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Case, IntegerField, When
+from django.db.models import Case, IntegerField, Max, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -62,6 +62,40 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
         resource = self.get_resource()
         form.instance.resource = resource
         return super().form_valid(form)
+
+
+class LearningUnitBulkCreateView(UserResourceMixin, View):
+    def post(self, request, *args, **kwargs):
+        resource = self.get_resource()
+
+        titles = request.POST.getlist("title[]")
+        durations = request.POST.getlist("duration[]")
+
+        last_order = (
+            LearningUnit.objects.filter(resource=resource).aggregate(
+                max_order=Max("order")
+            )["max_order"]
+            or 0
+        )
+
+        new_units = []
+
+        for index, (title, duration) in enumerate(zip(titles, durations), start=1):
+            if not title.strip():
+                continue
+
+            new_units.append(
+                LearningUnit(
+                    resource=resource,
+                    title=title.strip(),
+                    duration_minutes=int(duration) if duration else 0,
+                    order=last_order + index,
+                )
+            )
+
+        LearningUnit.objects.bulk_create(new_units)
+
+        return redirect(resource.get_absolute_url())
 
 
 class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateView):

@@ -1,0 +1,46 @@
+<div class="modal fade" id="bulkUnitModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      
+      <form method="post" action="{% url 'learning:unit_bulk_create' resource.pk %}"> 
+        {% csrf_token %}
+
+        <div class="modal-header">
+          <h5 class="modal-title">Add Multiple Learning Units</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <table class="table" id="units-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Duration (mins)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <button type="button" class="btn btn-secondary" onclick="addRow()">
+            + Add Row
+          </button>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Create Units
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

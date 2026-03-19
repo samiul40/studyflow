@@ -7,6 +7,7 @@ from .learning_resource import (
     ResourceUpdateView,
 )
 from .learning_unit import (
+    LearningUnitBulkCreateView,
     LearningUnitCreateView,
     LearningUnitDeleteView,
     LearningUnitReorderView,
@@ -25,5 +26,6 @@ __all__ = [
     "LearningUnitUpdateView",
     "LearningUnitReorderView",
     "LearningUnitUpdateStatusView",
+    "LearningUnitBulkCreateView",
     "dashboard_view",
 ]
