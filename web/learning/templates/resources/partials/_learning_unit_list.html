@@ -4,9 +4,15 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="fw-semibold mb-0">Learning Units</h4>
 
-      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-        Add Unit
-      </button>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
+          Add Unit
+        </button>
+
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#bulkUnitModal">
+          Add Multiple
+        </button>
+      </div>
     </div>
 
     {% if units %}
@@ -79,7 +85,6 @@
 
         {% include "resources/partials/_learning_unit_edit_modal.html" %}
         {% include "resources/partials/_learning_unit_delete_modal.html" %}
-
       </li>
       {% endfor %}
 

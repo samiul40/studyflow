@@ -182,6 +182,8 @@
   </div>
 </div>
 {% include "resources/partials/_learning_unit_create_modal.html" %}
+{% include "resources/partials/_learning_unit_bulk_create_modal.html" %}
+
 {% endblock %}
 
 {% block scripts %}
@@ -218,6 +220,17 @@
         });
 
       }
+    });
+
+    const modals = document.querySelectorAll(".modal");
+
+    modals.forEach(modal => {
+      modal.addEventListener("hide.bs.modal", function () {
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+        document.body.focus();
+      });
     });
 
   });
