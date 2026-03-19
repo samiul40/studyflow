@@ -102,7 +102,7 @@
                 </span>
 
                 <div>
-                  <strong>{{ unit.title }}</strong>
+                  <strong>{{ unit.title }}</strong> {% if unit.duration_minutes %} - {{ unit.duration_minutes }} mins {% endif %}
 
                   {% if unit.notes %}
                   <p class="small text-muted mb-0">
