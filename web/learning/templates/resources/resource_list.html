@@ -49,15 +49,76 @@ Learning Resources
             {{ resource.title }}
           </h5>
 
-          <span class="badge bg-secondary mb-2">
-            {{ resource.get_resource_type_display }}
-          </span>
+          <div class="mb-2">
+
+            <span class="badge bg-secondary">
+              {{ resource.get_resource_type_display }}
+            </span>
+
+            <!-- Status -->
+            {% with progress=resource.get_progress %}
+            {% with completed=progress.0 total=progress.1 percentage=progress.2 %}
+
+            <span class="badge
+              {% if percentage == 0 %}
+                  bg-secondary
+              {% elif percentage == 100 %}
+                  bg-success
+              {% else %}
+                  bg-primary
+              {% endif %}">
+              {% if percentage == 0 %}
+              Not Started
+              {% elif percentage == 100 %}
+              Completed
+              {% else %}
+              In Progress
+              {% endif %}
+            </span>
+
+            {% endwith %}
+            {% endwith %}
+
+          </div>
 
           {% if resource.description %}
           <p class="card-text text-muted">
             {{ resource.description|truncatewords:20 }}
           </p>
           {% endif %}
+
+          {% if resource.url %}
+          <p class="small">
+            <a href="{{ resource.url }}" target="_blank" class="text-decoration-none">
+              🔗 Open Resource
+            </a>
+          </p>
+          {% endif %}
+
+          {% with completed=resource.get_progress.0 total=resource.get_progress.1 percentage=resource.get_progress.2 %}
+
+          <div class="mb-3">
+
+            <small class="text-muted">
+              {{ completed }}/{{ total }} ({{ percentage }}%)
+            </small>
+
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar
+                {% if percentage == 0 %}
+                    bg-secondary
+                {% elif percentage == 100 %}
+                    bg-success
+                {% else %}
+                    bg-primary
+                {% endif %}" role="progressbar" style="width: {{ percentage }}%;" aria-valuenow="{{ percentage }}"
+                aria-valuemin="0" aria-valuemax="100">
+              </div>
+            </div>
+
+          </div>
+
+          {% endwith %}
 
           <a href="{{ resource.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
             View Details
