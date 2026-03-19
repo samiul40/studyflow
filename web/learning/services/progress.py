@@ -5,7 +5,7 @@ def get_resource_progress(resource):
     """
     Calculate progress statistics for a learning resource.
     """
-    units = resource.units.all()
+    units = resource.units.all().order_by("order")
 
     total_units = units.count()
     completed_units = units.filter(status="completed").count()
@@ -27,6 +27,7 @@ def get_resource_progress(resource):
     remaining_duration = total_duration - completed_duration
 
     return {
+        "units": units,
         "total_units": total_units,
         "completed_units": completed_units,
         "remaining_units": remaining_units,

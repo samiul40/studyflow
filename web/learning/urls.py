@@ -4,7 +4,7 @@ from .views import (
     LearningUnitCreateView,
     LearningUnitDeleteView,
     LearningUnitReorderView,
-    LearningUnitToggleStatusView,
+    LearningUnitUpdateStatusView,
     LearningUnitUpdateView,
     ResourceCreateView,
     ResourceDeleteView,
@@ -44,8 +44,8 @@ urlpatterns = [
     ),
     path(
         "units/<int:pk>/toggle-status/",
-        LearningUnitToggleStatusView.as_view(),
-        name="unit_toggle_status",
+        LearningUnitUpdateStatusView.as_view(),
+        name="unit_update_status",
     ),
     path("dashboard/", dashboard_view, name="dashboard"),
 ]

@@ -82,13 +82,11 @@
 
           <!-- Progress Bar -->
           <div class="progress mb-3" style="height: 20px;">
-            <div
-              class="progress-bar 
+            <div class="progress-bar 
               {% if completion_percentage == 100 %} bg-success 
               {% elif completion_percentage > 0 %} bg-primary 
               {% else %} bg-secondary 
-              {% endif %}"
-              role="progressbar" style="width: {{ completion_percentage }}%;">
+              {% endif %}" role="progressbar" style="width: {{ completion_percentage }}%;">
               {{ completion_percentage }}%
             </div>
           </div>
@@ -97,17 +95,17 @@
 
             <div class="col">
               <h6>Completed</h6>
-              <p class="mb-0 text-success">{{ completed_units }}</p>
+              <p class="mb-0 text-success fw-semibold">{{ completed_units }}</p>
             </div>
 
             <div class="col">
               <h6>Remaining</h6>
-              <p class="mb-0 text-warning">{{ remaining_units }}</p>
+              <p class="mb-0 text-warning fw-semibold">{{ remaining_units }}</p>
             </div>
 
             <div class="col">
               <h6>Total Units</h6>
-              <p class="mb-0">{{ total_units }}</p>
+              <p class="mb-0 fw-semibold">{{ total_units }}</p>
             </div>
 
           </div>
@@ -118,17 +116,17 @@
 
             <div class="col">
               <h6>Completed Time</h6>
-              <p class="mb-0 text-success">{{ completed_duration }} mins</p>
+              <p class="mb-0 text-success fw-semibold">{{ completed_duration }} mins</p>
             </div>
 
             <div class="col">
               <h6>Remaining Time</h6>
-              <p class="mb-0 text-warning">{{ remaining_duration }} mins</p>
+              <p class="mb-0 text-warning fw-semibold">{{ remaining_duration }} mins</p>
             </div>
 
             <div class="col">
               <h6>Total Time</h6>
-              <p class="mb-0">{{ total_duration }} mins</p>
+              <p class="mb-0 fw-semibold">{{ total_duration }} mins</p>
             </div>
 
           </div>
@@ -137,90 +135,7 @@
       </div>
 
       <!-- Learning Units -->
-      <div class="card shadow-sm">
-        <div class="card-body">
-
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>Learning Units</h4>
-
-            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-              Add Unit
-            </button>
-          </div>
-
-          {% if resource.units.all %}
-          <ul id="unit-list" class="list-group">
-
-            {% for unit in resource.units.all %}
-            <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ unit.id }}">
-
-              {% include "resources/partials/_learning_unit_edit_modal.html" %}
-              {% include "resources/partials/_learning_unit_delete_modal.html" %}
-
-              <div class="d-flex align-items-center gap-2">
-
-                <span class="drag-handle">
-                  ⋮⋮
-                </span>
-
-                <div>
-                  <strong>{{ unit.title }}</strong> {% if unit.duration_minutes %} - {{ unit.duration_minutes }} mins {%
-                  endif %}
-
-                  {% if unit.notes %}
-                  <p class="small text-muted mb-0">
-                    {{ unit.notes|truncatewords:15 }}
-                  </p>
-                  {% endif %}
-                </div>
-
-                <form method="post" action="{% url 'learning:unit_toggle_status' unit.id %}">
-                  {% csrf_token %}
-
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" {% if
-                      unit.status=="completed" %} checked {% endif %}>
-                  </div>
-                </form>
-                <span class="badge 
-                  {% if unit.status == 'not_started' %} bg-secondary 
-                  {% elif unit.status == 'in_progress' %} bg-info 
-                  {% elif unit.status == 'completed' %} bg-success 
-                  {% endif %}">
-                  {{ unit.get_status_display }}
-                </span>
-
-
-              </div>
-
-              <div class="d-flex align-items-center gap-2">
-
-                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                  data-bs-target="#editUnitModal{{ unit.id }}">
-                  Edit
-                </button>
-
-                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                  data-bs-target="#deleteUnitModal{{ unit.id }}">
-                  Delete
-                </button>
-
-              </div>
-
-            </li>
-            {% endfor %}
-
-          </ul>
-          {% else %}
-
-          <p class="text-muted">
-            No learning units added yet.
-          </p>
-
-          {% endif %}
-
-        </div>
-      </div>
+      {% include "resources/partials/_learning_unit_list.html" with resource=resource %}
 
     </div>
 

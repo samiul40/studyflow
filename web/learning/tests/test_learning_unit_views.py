@@ -137,7 +137,7 @@ def test_learning_unit_reorder(client_logged_in, user):
         lambda resource: reverse(
             "learning:unit_reorder", kwargs={"resource_pk": resource.pk}
         ),
-        lambda resource: reverse("learning:unit_toggle_status", kwargs={"pk": 1}),
+        lambda resource: reverse("learning:unit_update_status", kwargs={"pk": 1}),
     ],
 )
 def test_learning_unit_views_require_login(client, url):
@@ -149,7 +149,8 @@ def test_learning_unit_views_require_login(client, url):
     assert "/login/" in response.url
 
 
-def test_learning_unit_toggle_status_marks_completed(client_logged_in, user):
+@pytest.mark.parametrize("new_status", ["not_started", "in_progress", "completed"])
+def test_learning_unit_update_status_all_options(client_logged_in, user, new_status):
     resource = baker.make(LearningResource, user=user)
     unit = baker.make(
         LearningUnit,
@@ -157,27 +158,23 @@ def test_learning_unit_toggle_status_marks_completed(client_logged_in, user):
         status="not_started",
     )
 
-    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+    url = reverse("learning:unit_update_status", kwargs={"pk": unit.pk})
 
-    response = client_logged_in.post(url)
+    response = client_logged_in.post(url, {"status": new_status})
 
     unit.refresh_from_db()
 
     assert response.status_code == 302
-    assert unit.status == "completed"
+    assert unit.status == new_status
 
 
-def test_learning_unit_toggle_status_marks_not_started(client_logged_in, user):
+def test_learning_unit_update_status_invalid_value(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
-    unit = baker.make(
-        LearningUnit,
-        resource=resource,
-        status="completed",
-    )
+    unit = baker.make(LearningUnit, resource=resource, status="not_started")
 
-    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+    url = reverse("learning:unit_update_status", kwargs={"pk": unit.pk})
 
-    response = client_logged_in.post(url)
+    response = client_logged_in.post(url, {"status": "invalid_status"})
 
     unit.refresh_from_db()
 
@@ -185,12 +182,12 @@ def test_learning_unit_toggle_status_marks_not_started(client_logged_in, user):
     assert unit.status == "not_started"
 
 
-def test_user_cannot_toggle_other_users_unit(client_logged_in):
+def test_user_cannot_update_other_users_unit_status(client_logged_in):
     other_resource = baker.make(LearningResource)
     unit = baker.make(LearningUnit, resource=other_resource)
 
-    url = reverse("learning:unit_toggle_status", kwargs={"pk": unit.pk})
+    url = reverse("learning:unit_update_status", kwargs={"pk": unit.pk})
 
-    response = client_logged_in.post(url)
+    response = client_logged_in.post(url, {"status": "completed"})
 
     assert response.status_code == 404
