@@ -171,8 +171,9 @@
 
         <form method="post" action="{% url 'learning:resource_delete' resource.pk %}">
           {% csrf_token %}
-          <button type="submit" class="btn btn-danger">
-            Delete Resource
+          <button type="submit" class="btn btn-danger" onclick="handleSubmit(this)">
+            <span class="btn-text">Delete Resource</span>
+            <span class="spinner-border spinner-border-sm d-none"></span>
           </button>
         </form>
 
