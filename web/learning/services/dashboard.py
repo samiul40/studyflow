@@ -57,6 +57,12 @@ def get_dashboard_stats(user=None, resource_type=None) -> dict:
             }
         )
 
+    resource_progress = sorted(
+        resource_progress,
+        key=lambda x: x["percent"],
+        reverse=True,
+    )
+
     most_progress = max(resource_progress, key=lambda x: x["percent"], default=None)
     least_progress = min(resource_progress, key=lambda x: x["percent"], default=None)
 
