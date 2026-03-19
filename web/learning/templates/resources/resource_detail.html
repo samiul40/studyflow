@@ -111,9 +111,22 @@
                   {% endif %}
                 </div>
 
-                <span class="badge bg-success">
+                <form method="post" action="{% url 'learning:unit_toggle_status' unit.id %}">
+                  {% csrf_token %}
+
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" onchange="this.form.submit()" 
+                      {% if unit.status == "completed" %} checked {% endif %}>
+                  </div>
+                </form>
+                <span class="badge 
+                  {% if unit.status == 'not_started' %} bg-secondary 
+                  {% elif unit.status == 'in_progress' %} bg-info 
+                  {% elif unit.status == 'completed' %} bg-success 
+                  {% endif %}">
                   {{ unit.get_status_display }}
                 </span>
+
 
               </div>
 
