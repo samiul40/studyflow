@@ -10,6 +10,7 @@ from django.views.generic import (
 
 from learning.forms import LearningResourceForm
 from learning.models import LearningResource
+from learning.services import get_resource_progress
 
 
 class UserResourceMixin:
@@ -56,6 +57,12 @@ class ResourceDetailView(LoginRequiredMixin, UserResourceMixin, DetailView):
     model = LearningResource
     template_name = "resources/resource_detail.html"
     context_object_name = "resource"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progress = get_resource_progress(self.object)
+        context.update(progress)
+        return context
 
 
 class ResourceCreateView(LoginRequiredMixin, CreateView):
