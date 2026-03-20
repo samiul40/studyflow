@@ -301,3 +301,393 @@ select.form-select {
   appearance: none;
   cursor: pointer;
 }
+
+// ---------------------------------------------------------------------------
+// Detail card (resource header)
+// ---------------------------------------------------------------------------
+.detail-card {
+  background: #fff;
+  border: 1px solid $grey-200;
+  border-radius: $radius-lg;
+  overflow: hidden;
+
+  &__header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: $grey-900;
+    letter-spacing: -0.02em;
+    margin: 0.375rem 0 0;
+  }
+
+  &__desc {
+    font-size: 0.9rem;
+    color: $grey-500;
+    margin: 0.5rem 0 0;
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  &__footer {
+    padding: 0.75rem 1.5rem;
+    background: $grey-50;
+    border-top: 1px solid $grey-100;
+    font-size: 0.8125rem;
+    color: $grey-400;
+    font-weight: 500;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Stats card
+// ---------------------------------------------------------------------------
+.stats-card {
+  background: #fff;
+  border: 1px solid $grey-200;
+  border-radius: $radius-lg;
+  padding: 1.5rem;
+
+  &__progress-wrap {
+    margin-bottom: 1.5rem;
+  }
+
+  &__pct {
+    font-size: 1rem;
+    font-weight: 800;
+    color: $emerald-600;
+    letter-spacing: -0.02em;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  &__divider {
+    border-top: 1px solid $grey-100;
+    margin: 1.25rem 0;
+  }
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+
+  &__icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+
+    &--emerald { background: $emerald-50; color: $emerald-600; }
+    &--amber   { background: #fffbeb;     color: #d97706; }
+    &--blue    { background: #eff6ff;     color: #2563eb; }
+    &--violet  { background: #f5f3ff;     color: #7c3aed; }
+  }
+
+  &__value {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: $grey-900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $grey-400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Unit card & list
+// ---------------------------------------------------------------------------
+.unit-card {
+  background: #fff;
+  border: 1px solid $grey-200;
+  border-radius: $radius-lg;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid $grey-100;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $grey-900;
+    margin: 0;
+  }
+}
+
+.unit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.unit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid $grey-100;
+  transition: background $transition-fast;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: $grey-50; }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $grey-800;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__duration {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $grey-400;
+  }
+
+  &__notes {
+    font-size: 0.8125rem;
+    color: $grey-400;
+    margin-top: 0.2rem;
+    @include truncate;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Unit status select
+// ---------------------------------------------------------------------------
+.unit-status-select {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 1.75rem 0.25rem 0.625rem;
+  border-radius: $radius-pill;
+  border: 1px solid transparent;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &--not_started {
+    background-color: $grey-100;
+    color: $grey-600;
+    border-color: $grey-200;
+  }
+
+  &--in_progress {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+  }
+
+  &--completed {
+    background-color: $emerald-50;
+    color: $emerald-700;
+    border-color: $emerald-200;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Unit action buttons (icon only)
+// ---------------------------------------------------------------------------
+.unit-action-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: $radius-md;
+  border: 1px solid $grey-200;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+
+  &--edit {
+    color: $grey-500;
+    &:hover { background: $grey-100; border-color: $grey-300; color: $grey-700; }
+  }
+
+  &--delete {
+    color: #dc2626;
+    &:hover { background: #fef2f2; border-color: #fecaca; }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Unit empty state
+// ---------------------------------------------------------------------------
+.unit-empty {
+  padding: 2.5rem;
+  text-align: center;
+
+  &__icon {
+    font-size: 1.75rem;
+    color: $grey-300;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  &__text {
+    font-size: 0.9rem;
+    color: $grey-400;
+    margin: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Bulk table
+// ---------------------------------------------------------------------------
+.bulk-table {
+  font-size: 0.875rem;
+
+  th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $grey-400;
+    border-bottom-color: $grey-200;
+  }
+
+  td { vertical-align: middle; }
+}
+
+// ---------------------------------------------------------------------------
+// Modal overrides
+// ---------------------------------------------------------------------------
+.modal-content {
+  border: 1px solid $grey-200;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+}
+
+.modal-header {
+  border-bottom: 1px solid $grey-100;
+  padding: 1.25rem 1.5rem;
+
+  .modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $grey-900;
+  }
+}
+
+.modal-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid $grey-100;
+  padding: 1rem 1.5rem;
+  gap: 0.5rem;
+}
+
+// ---------------------------------------------------------------------------
+// Detail page responsive
+// ---------------------------------------------------------------------------
+@media (max-width: 768px) {
+  .detail-card__header {
+    flex-direction: column;
+  }
+
+  .detail-card__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .stats-card__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stats-item__value { font-size: 1.125rem; }
+
+  .unit-item {
+    padding: 0.875rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .unit-item__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Drag handle
+// ---------------------------------------------------------------------------
+.drag-handle {
+  cursor: grab;
+  color: $grey-300;
+  font-size: 1rem;
+  user-select: none;
+  transition: color $transition-fast;
+  flex-shrink: 0;
+  padding: 0.25rem;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:hover {
+    color: $grey-600;
+  }
+}

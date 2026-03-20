@@ -1,174 +1,165 @@
 {% extends "base.html" %}
 
-{% block title %}
-{{ resource.title }}
-{% endblock %}
-
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="mb-3">
+<nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-
-    <li class="breadcrumb-item">
-      <a href="{% url 'index' %}">Home</a>
-    </li>
-
-    <li class="breadcrumb-item">
-      <a href="{% url 'learning:resource_list' %}">
-        Resources
-      </a>
-    </li>
-
-    <li class="breadcrumb-item active">
-      {{ resource.title }}
-    </li>
-
+    <li class="breadcrumb-item"><a href="{% url 'learning:dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'learning:resource_list' %}">Resources</a></li>
+    <li class="breadcrumb-item active">{{ resource.title }}</li>
   </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
 
-  <div class="row">
-    <div class="col-md-8">
+<div class="row g-4">
+  <div class="col-lg-12">
 
-      <!-- Resource Info -->
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
+    <!-- Resource info card -->
+    <div class="detail-card mb-4">
 
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <h2 class="card-title">{{ resource.title }}</h2>
-
-              <span class="badge bg-secondary">
+      <div class="detail-card__header">
+        <div class="detail-card__title-row">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="resource-badge resource-badge--{{ resource.resource_type }}">
                 {{ resource.get_resource_type_display }}
               </span>
+              <span class="status-badge
+                {% if completion_percentage == 0 %}status-badge--not-started
+                {% elif completion_percentage == 100 %}status-badge--completed
+                {% else %}status-badge--in-progress{% endif %}">
+                {% if completion_percentage == 0 %}Not Started
+                {% elif completion_percentage == 100 %}Completed
+                {% else %}In Progress{% endif %}
+              </span>
             </div>
-
-            <div>
-              <a href="{% url 'learning:resource_update' resource.pk %}" class="btn btn-sm btn-outline-secondary">
-                Edit
-              </a>
-              <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                Delete
-              </button>
-            </div>
+            <h2 class="detail-card__title">{{ resource.title }}</h2>
+            {% if resource.description %}
+            <p class="detail-card__desc">{{ resource.description }}</p>
+            {% endif %}
           </div>
+        </div>
 
-          {% if resource.description %}
-          <p class="mt-3 text-muted">
-            {{ resource.description }}
-          </p>
-          {% endif %}
-
+        <div class="detail-card__actions">
           {% if resource.url %}
-          <a href="{{ resource.url }}" target="_blank" class="btn btn-primary mt-2">
-            Open Resource
+          <a href="{{ resource.url }}" target="_blank" class="btn btn-primary btn-sm">
+            <i class="fas fa-arrow-up-right-from-square me-1"></i> Open Resource
           </a>
           {% endif %}
-
-        </div>
-
-        <div class="card-footer text-muted small">
-          Created {{ resource.created_at|date:"d M Y" }}
-        </div>
-      </div>
-
-      <!-- Progress Stats -->
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-
-          <h5 class="mb-3">Progress</h5>
-
-          <!-- Progress Bar -->
-          <div class="progress mb-3" style="height: 20px;">
-            <div class="progress-bar 
-              {% if completion_percentage == 100 %} bg-success 
-              {% elif completion_percentage > 0 %} bg-primary 
-              {% else %} bg-secondary 
-              {% endif %}" role="progressbar" style="width: {{ completion_percentage }}%;">
-              {{ completion_percentage }}%
-            </div>
-          </div>
-
-          <div class="row text-center">
-
-            <div class="col">
-              <h6>Completed</h6>
-              <p class="mb-0 text-success fw-semibold">{{ completed_units }}</p>
-            </div>
-
-            <div class="col">
-              <h6>Remaining</h6>
-              <p class="mb-0 text-warning fw-semibold">{{ remaining_units }}</p>
-            </div>
-
-            <div class="col">
-              <h6>Total Units</h6>
-              <p class="mb-0 fw-semibold">{{ total_units }}</p>
-            </div>
-
-          </div>
-
-          <hr>
-
-          <div class="row text-center">
-
-            <div class="col">
-              <h6>Completed Time</h6>
-              <p class="mb-0 text-success fw-semibold">{{ completed_duration }} mins</p>
-            </div>
-
-            <div class="col">
-              <h6>Remaining Time</h6>
-              <p class="mb-0 text-warning fw-semibold">{{ remaining_duration }} mins</p>
-            </div>
-
-            <div class="col">
-              <h6>Total Time</h6>
-              <p class="mb-0 fw-semibold">{{ total_duration }} mins</p>
-            </div>
-
-          </div>
-
+          <a href="{% url 'learning:resource_update' resource.pk %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-pen me-1"></i> Edit
+          </a>
+          <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            <i class="fas fa-trash me-1"></i> Delete
+          </button>
         </div>
       </div>
 
-      <!-- Learning Units -->
-      {% include "resources/partials/_learning_unit_list.html" with resource=resource %}
+      <div class="detail-card__footer">
+        <i class="fas fa-calendar me-1"></i> Added {{ resource.created_at|date:"d M Y" }}
+      </div>
 
     </div>
 
-  </div>
+    <!-- Progress stats -->
+    <div class="stats-card mb-4">
 
+      <div class="stats-card__progress-wrap">
+        <div class="d-flex justify-content-between align-items-baseline mb-2">
+          <span class="section-title mb-0">Overall Progress</span>
+          <span class="stats-card__pct">{{ completion_percentage }}%</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ completion_percentage }}%;"
+            aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-card__grid">
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--emerald">
+            <i class="fas fa-circle-check"></i>
+          </div>
+          <div class="stats-item__value">{{ completed_units }}</div>
+          <div class="stats-item__label">Completed</div>
+        </div>
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--amber">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
+          <div class="stats-item__value">{{ remaining_units }}</div>
+          <div class="stats-item__label">Remaining</div>
+        </div>
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--blue">
+            <i class="fas fa-list-check"></i>
+          </div>
+          <div class="stats-item__value">{{ total_units }}</div>
+          <div class="stats-item__label">Total Units</div>
+        </div>
+
+      </div>
+
+      <div class="stats-card__divider"></div>
+
+      <div class="stats-card__grid">
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--emerald">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stats-item__value">{{ completed_duration }}</div>
+          <div class="stats-item__label">Mins Done</div>
+        </div>
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--amber">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stats-item__value">{{ remaining_duration }}</div>
+          <div class="stats-item__label">Mins Left</div>
+        </div>
+
+        <div class="stats-item">
+          <div class="stats-item__icon stats-item__icon--blue">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stats-item__value">{{ total_duration }}</div>
+          <div class="stats-item__label">Total Mins</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Learning units -->
+    {% include "resources/partials/_learning_unit_list.html" with resource=resource %}
+
+  </div>
 </div>
 
+<!-- Delete resource modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">Delete Resource</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
       <div class="modal-body">
-        <p>
-          Are you sure you want to delete
-          <strong>{{ resource.title }}</strong>?
-        </p>
+        <p>Are you sure you want to delete <strong>{{ resource.title }}</strong>?</p>
         <p class="text-danger mb-0">
-          This will also delete all learning units associated with
-          this resource.
+          <i class="fas fa-triangle-exclamation me-1"></i>
+          This will also delete all learning units associated with this resource.
         </p>
       </div>
-
       <div class="modal-footer">
-
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
         <form method="post" action="{% url 'learning:resource_delete' resource.pk %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger" onclick="handleSubmit(this)">
@@ -176,41 +167,30 @@
             <span class="spinner-border spinner-border-sm d-none"></span>
           </button>
         </form>
-
       </div>
-
     </div>
   </div>
 </div>
+
 {% include "resources/partials/_learning_unit_create_modal.html" %}
 {% include "resources/partials/_learning_unit_bulk_create_modal.html" %}
 
 {% endblock %}
 
 {% block scripts %}
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-
     const unitList = document.getElementById("unit-list");
-
     if (!unitList) return;
 
     new Sortable(unitList, {
       animation: 150,
       handle: ".drag-handle",
-
       onEnd: function () {
-
         const order = [];
-
         unitList.querySelectorAll("li").forEach((item, index) => {
-          order.push({
-            id: item.dataset.id,
-            order: index + 1
-          });
+          order.push({ id: item.dataset.id, order: index + 1 });
         });
-
         fetch("{% url 'learning:unit_reorder' resource.pk %}", {
           method: "POST",
           headers: {
@@ -219,22 +199,16 @@
           },
           body: JSON.stringify({ order: order })
         });
-
       }
     });
 
     const modals = document.querySelectorAll(".modal");
-
     modals.forEach(modal => {
       modal.addEventListener("hide.bs.modal", function () {
-        if (document.activeElement) {
-          document.activeElement.blur();
-        }
+        if (document.activeElement) document.activeElement.blur();
         document.body.focus();
       });
     });
-
   });
 </script>
-
 {% endblock %}
