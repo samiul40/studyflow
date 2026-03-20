@@ -65,6 +65,11 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
         messages.success(self.request, "Unit created successfully.")
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, "Title is required.")
+        resource = self.get_resource()
+        return redirect(resource.get_absolute_url())
+
 
 class LearningUnitBulkCreateView(UserResourceMixin, View):
     def post(self, request, *args, **kwargs):
@@ -94,6 +99,10 @@ class LearningUnitBulkCreateView(UserResourceMixin, View):
                     order=last_order + index,
                 )
             )
+
+        if not new_units:
+            messages.warning(request, "No valid units to add.")
+            return redirect(resource.get_absolute_url())
 
         LearningUnit.objects.bulk_create(new_units)
 
@@ -185,7 +194,6 @@ class LearningUnitUpdateStatusView(UserUnitMixin, View):
         ):
             unit.status = new_status
             unit.save()
-
-        messages.success(request, "Unit status updated.")
+            messages.success(request, "Unit status updated.")
 
         return redirect(unit.resource.get_absolute_url())
