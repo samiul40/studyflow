@@ -32,7 +32,7 @@
     {% endblock %}
 
     <!-- Alerts -->
-    <div class="my-4"></div>
+    <div class="my-4">
       {% include 'partials/_alerts.html' %}
     </div>
     
@@ -46,7 +46,7 @@
 
   <script src="{% static 'js/bootstrap.bundle.min.js' %}" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="{% static 'js/units.js' %}"></script>
   <script src="{% static 'js/main.js' %}"></script>
   {% block scripts %}{% endblock %}

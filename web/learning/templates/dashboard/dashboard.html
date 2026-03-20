@@ -1,250 +1,272 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
 
-  <h2 class="mb-4">Your Dashboard</h2>
+<!-- Page header -->
+<div class="page-header">
+  <h2>Dashboard</h2>
+  <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Add Resource
+  </a>
+</div>
 
-  <!-- Filters -->
-  <div class="mb-3">
-    <div class="btn-group">
+<!-- Filter pills -->
+<div class="filter-pills">
 
-      <!-- ALL -->
-      <a href="{% url 'learning:dashboard' %}"
-        class="btn btn-outline-primary {% if not active_filter %}active{% endif %}">
-        All ({{ total_resources }})
-      </a>
+  <a href="{% url 'learning:dashboard' %}" class="filter-pill {% if not active_filter %}active{% endif %}">
+    <i class="fas fa-border-all"></i> All
+    <span class="pill-count">{{ total_resources }}</span>
+  </a>
 
-      <!-- COURSES -->
-      <a href="{% url 'learning:dashboard' %}?type=udemy" class="btn btn-outline-primary
-       {% if active_filter == 'udemy' %}active{% endif %}
-       {% if type_counts.udemy == 0 %}disabled{% endif %}">
-        Courses ({{ type_counts.udemy }})
-      </a>
+  <a href="{% url 'learning:dashboard' %}?type=udemy"
+    class="filter-pill {% if active_filter == 'udemy' %}active{% endif %} {% if type_counts.udemy == 0 %}disabled{% endif %}">
+    <i class="fas fa-play-circle"></i> Courses
+    <span class="pill-count">{{ type_counts.udemy }}</span>
+  </a>
 
-      <!-- YOUTUBE -->
-      <a href="{% url 'learning:dashboard' %}?type=youtube" class="btn btn-outline-primary
-       {% if active_filter == 'youtube' %}active{% endif %}
-       {% if type_counts.youtube == 0 %}disabled{% endif %}">
-        YouTube ({{ type_counts.youtube }})
-      </a>
+  <a href="{% url 'learning:dashboard' %}?type=youtube"
+    class="filter-pill {% if active_filter == 'youtube' %}active{% endif %} {% if type_counts.youtube == 0 %}disabled{% endif %}">
+    <i class="fab fa-youtube"></i> YouTube
+    <span class="pill-count">{{ type_counts.youtube }}</span>
+  </a>
 
-      <!-- BOOKS -->
-      <a href="{% url 'learning:dashboard' %}?type=book" class="btn btn-outline-primary
-       {% if active_filter == 'book' %}active{% endif %}
-       {% if type_counts.book == 0 %}disabled{% endif %}">
-        Books ({{ type_counts.book }})
-      </a>
+  <a href="{% url 'learning:dashboard' %}?type=book"
+    class="filter-pill {% if active_filter == 'book' %}active{% endif %} {% if type_counts.book == 0 %}disabled{% endif %}">
+    <i class="fas fa-book"></i> Books
+    <span class="pill-count">{{ type_counts.book }}</span>
+  </a>
 
-      <!-- OTHER -->
-      <a href="{% url 'learning:dashboard' %}?type=other" class="btn btn-outline-primary
-       {% if active_filter == 'other' %}active{% endif %}
-       {% if type_counts.other == 0 %}disabled{% endif %}">
-        Other ({{ type_counts.other }})
-      </a>
+  <a href="{% url 'learning:dashboard' %}?type=other"
+    class="filter-pill {% if active_filter == 'other' %}active{% endif %} {% if type_counts.other == 0 %}disabled{% endif %}">
+    <i class="fas fa-layer-group"></i> Other
+    <span class="pill-count">{{ type_counts.other }}</span>
+  </a>
 
+</div>
+
+<!-- Insight banner — shown at top when there's progress -->
+{% if most_progress and most_progress.percent > 0 %}
+<div class="insight-banner">
+  <span>🚀</span>
+  <div class="insight-banner__text">
+    Top progress: <strong>{{ most_progress.title }}</strong> — {{ most_progress.percent }}% complete
+  </div>
+</div>
+{% endif %}
+
+<!-- KPI cards -->
+<div class="row g-3 mb-4">
+
+  <div class="col-6 col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--emerald">
+        <i class="fas fa-folder-open"></i>
+      </div>
+      <div>
+        <div class="kpi-value">{{ total_resources }}</div>
+        <div class="kpi-label">Resources</div>
+      </div>
     </div>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="row mb-4">
-
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm p-3">
-        <h3>{{ total_resources }}</h3>
-        <p>Courses</p>
+  <div class="col-6 col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--blue">
+        <i class="fas fa-list-check"></i>
+      </div>
+      <div>
+        <div class="kpi-value">{{ total_units }}</div>
+        <div class="kpi-label">Total Units</div>
       </div>
     </div>
-
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm p-3">
-        <h3>{{ total_units }}</h3>
-        <p>Lessons</p>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm p-3">
-        <h3>{{ completed_units }}</h3>
-        <p>Completed</p>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card text-center shadow-sm p-3">
-        <h3>{{ incomplete_units }}</h3>
-        <p>Remaining</p>
-      </div>
-    </div>
-
   </div>
 
-  {% if total_units > 0 %}
-
-  <div class="row mb-3 align-items-stretch">
-    <h6 class="text-muted">
-      Showing: {{ active_filter|default:"All" }}
-    </h6>
-
-    <div class="col-md-4">
-      <!-- Pie -->
-      <div class="card p-3 shadow-sm h-100">
-        <h5>Completion Breakdown</h5>
-        <canvas id="completionChart"></canvas>
+  <div class="col-6 col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--violet">
+        <i class="fas fa-circle-check"></i>
+      </div>
+      <div>
+        <div class="kpi-value">{{ completed_units }}</div>
+        <div class="kpi-label">Completed</div>
       </div>
     </div>
+  </div>
 
-    <div class="col-md-8">
-      <!-- Bar -->
-      <div class="card p-3 shadow-sm h-100">
-        <h5>Top Resource Progress</h5>
-        <canvas id="resourceChart"></canvas>
+  <div class="col-6 col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--amber">
+        <i class="fas fa-hourglass-half"></i>
+      </div>
+      <div>
+        <div class="kpi-value">{{ incomplete_units }}</div>
+        <div class="kpi-label">Remaining</div>
       </div>
     </div>
-
-  </div>
-  {% endif %}
-
-  <!-- EMPTY STATE -->
-  {% if total_resources == 0 %}
-  <div class="card text-center p-4 shadow-sm mb-4">
-    <h4 class="mb-2">No resources yet 📚</h4>
-    <p class="text-muted">
-      Start tracking your learning by adding your first resource.
-    </p>
-
-    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary mt-2">
-      ➕ Add Your First Resource
-    </a>
-  </div>
-  {% endif %}
-
-  {% if total_units > 0 and total_resources > 0 %}
-  <!-- COURSE PROGRESS -->
-  <h4>Course Progress</h4>
-
-  <div class="card p-3 shadow-sm mb-4">
-
-    {% if resource_progress %}
-    {% for resource in resource_progress %}
-    <div class="mb-3">
-
-      <div class="d-flex justify-content-between">
-        <strong>{{ resource.title }}</strong>
-        <span>{{ resource.percent }}%</span>
-      </div>
-
-      <div class="progress">
-        <div class="progress-bar bg-success" role="progressbar" style="width: {{ resource.percent }}%;">
-        </div>
-      </div>
-
-    </div>
-    {% endfor %}
-    {% else %}
-    <p class="text-muted">No progress to show yet</p>
-    {% endif %}
-
-  </div>
-
-  <!-- INSIGHT -->
-  {% if most_progress and most_progress.percent > 0 %}
-  <div class="alert alert-success">
-    🚀 Top Progress: <strong>{{ most_progress.title }}</strong>
-    ({{ most_progress.percent }}%)
-  </div>
-  {% endif %}
-
-  <!-- RECENTLY ADDED -->
-  <div class="mt-4">
-    <h4>Recently Added</h4>
-
-    {% if recent_resources %}
-    <ul class="list-group">
-      {% for r in recent_resources %}
-      <li class="list-group-item">
-        {{ r.title }}
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endif %}
-  </div>
-
-  <!-- TIP -->
-  <div class="alert alert-info mt-4">
-    💡 Tip: Add a course, book, or YouTube playlist to start tracking progress.
   </div>
 
 </div>
-{% endblock %}
 
+{% if total_units > 0 %}
+
+<!-- Showing label -->
+<p class="section-title">Showing: {{ active_filter|default:"All resources" }}</p>
+
+<!-- Charts -->
+<div class="row g-3 mb-4 align-items-stretch">
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4 d-flex">
+      <div class="chart-card chart-card--donut w-100">
+        <div class="chart-card__title">Completion Breakdown</div>
+        <div class="chart-canvas-wrap">
+          <canvas id="completionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8 d-flex">
+      <div class="chart-card w-100">
+        <div class="chart-card__title">Resource Progress</div>
+        <canvas id="resourceChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endif %}
+
+<!-- Empty state -->
+{% if total_resources == 0 %}
+<div class="empty-state">
+  <span class="empty-state__icon">📚</span>
+  <div class="empty-state__title">No resources yet</div>
+  <p class="empty-state__text">
+    Start tracking your learning by adding your first resource — a course, book, or YouTube playlist.
+  </p>
+  <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Add Your First Resource
+  </a>
+</div>
+{% endif %}
+
+{% if total_units > 0 and total_resources > 0 %}
+
+<!-- Course progress + Recently added -->
+<div class="row g-3 mb-4">
+
+  <div class="col-lg-8">
+    <p class="section-title">Course Progress</p>
+    <div class="card p-4">
+      <div class="progress-list">
+        {% if resource_progress %}
+        {% for resource in resource_progress %}
+        <div class="progress-item">
+          <div class="progress-item__header">
+            <span class="progress-item__title">{{ resource.title }}</span>
+            <span class="progress-item__pct">{{ resource.percent }}%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ resource.percent }}%;"
+              aria-valuenow="{{ resource.percent }}" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-muted mb-0">No progress yet — mark some units as complete.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <p class="section-title">Recently Added</p>
+    {% if recent_resources %}
+    <div class="recent-list">
+      {% for r in recent_resources %}
+      <a href="{{ r.get_absolute_url }}" class="recent-item">
+        <div>
+          <div class="recent-item__title">{{ r.title }}</div>
+          <div class="recent-item__meta">
+            <span class="resource-badge resource-badge--{{ r.resource_type }}">
+              {{ r.get_resource_type_display }}
+            </span>
+          </div>
+        </div>
+        <i class="fas fa-arrow-right recent-item__arrow"></i>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
 {% block scripts %}
 <script>
-  // Pie Chart (Completed vs Remaining)
   const completionCtx = document.getElementById('completionChart');
-
-  new Chart(completionCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Completed', 'Remaining'],
-      datasets: [{
-        data: [
-          {{ completed_units }},
-      {{ incomplete_units }}
-        ],
-    backgroundColor: [
-      // 'rgb(255, 99, 132)',
-      'rgb(75, 192, 192)',
-      'rgb(255, 99, 132)',
-    ],
-  }]
-    },
-    options: {
+  if (completionCtx) {
+    new Chart(completionCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Completed', 'Remaining'],
+        datasets: [{
+          data: [{{ completed_units }}, {{ incomplete_units }}],
+      backgroundColor: ['#10b981', '#e5e7eb'],
+      borderWidth: 0,
+      hoverOffset: 4,
+    }]
+      },
+  options: {
     responsive: true,
-    plugins: {
+      maintainAspectRatio: false,
+        cutout: '70%',
+          plugins: {
       legend: {
-        position: 'bottom'
+        position: 'bottom',
+          labels: { font: { size: 12, weight: '600' }, padding: 16 }
       }
     }
   }
-  });
+    });
+  }
 
-
-  // Bar Chart (Resource Progress)
   const resourceCtx = document.getElementById('resourceChart');
-
-  new Chart(resourceCtx, {
-    type: 'bar',
-    data: {
-      labels: [
-        {% for r in resource_progress %}
-          "{{ r.title|escapejs }}",
-        {% endfor %}
-      ],
-    datasets: [{
-      label: 'Completion %',
-      data: [
-        {% for r in resource_progress %}
-            {{ r.percent }},
-    {% endfor %}
-  ],
-      }]
-    },
-    options: {
+  if (resourceCtx) {
+    new Chart(resourceCtx, {
+      type: 'bar',
+      data: {
+        labels: [{% for r in resource_progress %}"{{ r.title|escapejs }}",{% endfor %}],
+  datasets: [{
+    label: 'Completion %',
+    data: [{% for r in resource_progress %}{{ r.percent }}, {% endfor %}],
+    backgroundColor: '#10b981',
+      borderRadius: 6,
+        borderSkipped: false,
+        }]
+      },
+  options: {
     responsive: true,
-    scales: {
+      scales: {
       y: {
         beginAtZero: true,
-        max: 100
+          max: 100,
+            grid: { color: '#f3f4f6' },
+        ticks: { font: { size: 11 }, callback: v => v + '%' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 11 } }
       }
     },
-    plugins: {
-      legend: {
-        display: false
-      }
-    }
+    plugins: { legend: { display: false } }
   }
-  });
+    });
+  }
 </script>
 {% endblock %}

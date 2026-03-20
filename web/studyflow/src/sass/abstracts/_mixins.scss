@@ -1,10 +1,11 @@
 // =============================================================================
 // _mixins.scss
 // =============================================================================
+@use 'variables' as *;
 
 // Card hover lift effect
 @mixin hover-lift {
-  transition: box-shadow $transition-base, transform $transition-base;
+  transition: box-shadow $transition-fast, transform $transition-fast;
   &:hover {
     box-shadow: $shadow-md;
     transform: translateY(-2px);

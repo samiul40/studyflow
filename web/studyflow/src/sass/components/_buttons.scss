@@ -1,0 +1,12 @@
+@use '../abstracts/variables' as *;
+
+.btn-primary {
+  background-color: $emerald-500 !important;
+  border-color: $emerald-500 !important;
+  color: #fff !important;
+
+  &:hover, &:focus {
+    background-color: $emerald-600 !important;
+    border-color: $emerald-600 !important;
+  }
+}
