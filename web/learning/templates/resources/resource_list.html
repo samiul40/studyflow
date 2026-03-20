@@ -1,167 +1,132 @@
 {% extends "base.html" %}
 
-{% block title %}
-Learning Resources
-{% endblock %}
-
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="mb-3">
+<nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'index' %}">Home</a>
-    </li>
-    <li class="breadcrumb-item active">
-      Resources
-    </li>
+    <li class="breadcrumb-item"><a href="{% url 'learning:dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item active">Resources</li>
   </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Learning Resources</h2>
 
-    {% if not search_query or resources %}
-    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
-      Add Resource
-    </a>
-    {% endif %}
+<!-- Page header -->
+<div class="page-header">
+  <h2>Learning Resources</h2>
+  {% if not search_query or resources %}
+  <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Add Resource
+  </a>
+  {% endif %}
+</div>
+
+<!-- Search -->
+<form method="get" class="mb-4" id="searchForm">
+  <div class="resource-search">
+    <i class="fas fa-search resource-search__icon"></i>
+    <input type="text" name="search" id="searchInput" class="resource-search__input" placeholder="Search resources..."
+      value="{{ search_query }}">
   </div>
+</form>
 
-  <!-- Search -->
-  <form method="get" class="mb-4" id="searchForm">
-    <div class="input-group">
-      <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search resources..."
-        value="{{ search_query }}">
-    </div>
-  </form>
+{% if resources %}
+<div class="row g-3">
+  {% for resource in resources %}
 
-  {% if resources %}
-  <div class="row">
-    {% for resource in resources %}
-    <div class="col-md-4 mb-4">
+  {% with progress=resource.get_progress %}
+  {% with completed=progress.0 total=progress.1 percentage=progress.2 %}
 
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
+  <div class="col-md-4">
+    <div class="resource-card">
 
-          <h5 class="card-title">
-            {{ resource.title }}
-          </h5>
-
-          <div class="mb-2">
-
-            <span class="badge bg-secondary">
-              {{ resource.get_resource_type_display }}
-            </span>
-
-            <!-- Status -->
-            {% with progress=resource.get_progress %}
-            {% with completed=progress.0 total=progress.1 percentage=progress.2 %}
-
-            <span class="badge
-              {% if percentage == 0 %}
-                  bg-secondary
-              {% elif percentage == 100 %}
-                  bg-success
-              {% else %}
-                  bg-primary
-              {% endif %}">
-              {% if percentage == 0 %}
-              Not Started
-              {% elif percentage == 100 %}
-              Completed
-              {% else %}
-              In Progress
-              {% endif %}
-            </span>
-
-            {% endwith %}
-            {% endwith %}
-
-          </div>
-
-          {% if resource.description %}
-          <p class="card-text text-muted">
-            {{ resource.description|truncatewords:20 }}
-          </p>
-          {% endif %}
-
-          {% if resource.url %}
-          <p class="small">
-            <a href="{{ resource.url }}" target="_blank" class="text-decoration-none">
-              🔗 Open Resource
-            </a>
-          </p>
-          {% endif %}
-
-          {% with completed=resource.get_progress.0 total=resource.get_progress.1 percentage=resource.get_progress.2 %}
-
-          <div class="mb-3">
-
-            <small class="text-muted">
-              {{ completed }}/{{ total }} ({{ percentage }}%)
-            </small>
-
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar
-                {% if percentage == 0 %}
-                    bg-secondary
-                {% elif percentage == 100 %}
-                    bg-success
-                {% else %}
-                    bg-primary
-                {% endif %}" role="progressbar" style="width: {{ percentage }}%;" aria-valuenow="{{ percentage }}"
-                aria-valuemin="0" aria-valuemax="100">
-              </div>
-            </div>
-
-          </div>
-
-          {% endwith %}
-
-          <a href="{{ resource.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
-            View Details
-          </a>
-
+      <div class="resource-card__header">
+        <div class="resource-card__badges">
+          <span class="resource-badge resource-badge--{{ resource.resource_type }}">
+            {{ resource.get_resource_type_display }}
+          </span>
+          <span class="status-badge
+            {% if percentage == 0 %}status-badge--not-started
+            {% elif percentage == 100 %}status-badge--completed
+            {% else %}status-badge--in-progress{% endif %}">
+            {% if percentage == 0 %}Not Started
+            {% elif percentage == 100 %}Completed
+            {% else %}In Progress{% endif %}
+          </span>
         </div>
+        <span class="resource-card__date">{{ resource.created_at|date:"d M Y" }}</span>
+      </div>
 
-        <div class="card-footer text-muted small">
-          Added {{ resource.created_at|date:"d M Y" }}
+      <h5 class="resource-card__title">{{ resource.title }}</h5>
+
+      {% if resource.description %}
+      <p class="resource-card__desc">{{ resource.description|truncatewords:20 }}</p>
+      {% endif %}
+
+      {% if resource.url %}
+      <a href="{{ resource.url }}" target="_blank" class="resource-card__link">
+        <i class="fas fa-arrow-up-right-from-square me-1"></i> Open Resource
+      </a>
+      {% endif %}
+
+      <div class="resource-card__progress">
+        <div class="resource-card__progress-header">
+          <span class="resource-card__progress-label">Progress</span>
+          <span class="resource-card__progress-value">{{ completed }}/{{ total }} &middot; {{ percentage }}%</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ percentage }}%;"
+            aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+          </div>
         </div>
       </div>
 
+      <a href="{{ resource.get_absolute_url }}" class="resource-card__cta">
+        View Details <i class="fas fa-arrow-right ms-1"></i>
+      </a>
+
     </div>
-    {% endfor %}
   </div>
 
-  {% else %}
+  {% endwith %}
+  {% endwith %}
 
-  <div class="text-center mt-5">
-    <h4>No resources yet</h4>
-    <p class="text-muted">Start tracking your learning resources.</p>
-
-    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
-      Add your first resource
-    </a>
-  </div>
-
-  {% endif %}
-
+  {% endfor %}
 </div>
+
+{% else %}
+
+<div class="empty-state">
+  <span class="empty-state__icon">📚</span>
+  <div class="empty-state__title">
+    {% if search_query %}No results for "{{ search_query }}"{% else %}No resources yet{% endif %}
+  </div>
+  <p class="empty-state__text">
+    {% if search_query %}
+    Try a different search term or clear your search.
+    {% else %}
+    Start tracking your learning by adding your first resource.
+    {% endif %}
+  </p>
+  {% if not search_query %}
+  <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> Add Your First Resource
+  </a>
+  {% endif %}
+</div>
+
+{% endif %}
+
 {% endblock %}
 
 {% block scripts %}
-
 <script>
   const searchInput = document.getElementById("searchInput");
   const searchForm = document.getElementById("searchForm");
-
   let debounceTimer;
 
   searchInput.addEventListener("input", function () {
     clearTimeout(debounceTimer);
-
     debounceTimer = setTimeout(() => {
       if (searchInput.value.trim() === "") {
         window.location.href = window.location.pathname;
@@ -171,5 +136,4 @@ Learning Resources
     }, 400);
   });
 </script>
-
 {% endblock %}
