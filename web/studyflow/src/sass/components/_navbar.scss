@@ -100,3 +100,21 @@
     .dropdown-divider { margin: 0.375rem 0; border-color: $grey-100; }
   }
 }
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+    padding: 0.75rem 0;
+    border-top: 1px solid $grey-100;
+    margin-top: 0.75rem;
+
+    .nav-link {
+      padding: 0.5rem 0.75rem;
+      border-radius: $radius-md;
+
+      &.active {
+        background: $emerald-50;
+        color: $emerald-700;
+      }
+    }
+  }
+}
