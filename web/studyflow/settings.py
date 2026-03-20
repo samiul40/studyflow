@@ -1,24 +1,21 @@
 import os
 from pathlib import Path
 
-import environ
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-6r78gw9t(unit(pln@jxv)0fz)#n5a@5p%cc%ww#k2=mrq#qt9"
+SECRET_KEY = os.environ.get("SECRET_KEY", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -31,7 +28,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # External Packages
-    "debug_toolbar",
     "rest_framework",
     "django_filters",
     "adminsortable2",
@@ -43,14 +39,20 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+# Only enable debug toolbar locally
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+    INTERNAL_IPS = ["127.0.0.1"]
 
 ROOT_URLCONF = "studyflow.urls"
 
@@ -74,7 +76,6 @@ WSGI_APPLICATION = "studyflow.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 if os.environ.get("CI"):
     DATABASES = {
@@ -86,10 +87,10 @@ if os.environ.get("CI"):
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ["POSTGRES_DB"],
-            "USER": os.environ["POSTGRES_USER"],
-            "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.environ.get("POSTGRES_DB", ""),
+            "USER": os.environ.get("POSTGRES_USER", ""),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
             "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
             "PORT": os.environ.get("POSTGRES_PORT", "5432"),
         }
@@ -97,7 +98,6 @@ else:
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,25 +116,25 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# Internationalisation
 
 LANGUAGE_CODE = "en-gb"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
+
+
+# Static & media files
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "studyflow", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
