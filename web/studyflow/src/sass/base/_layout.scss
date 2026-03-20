@@ -1,6 +1,7 @@
 // =============================================================================
 // _layout.scss — Page shell, main container, page header
 // =============================================================================
+@use '../abstracts/variables' as *;
 
 main.flex-grow-1 {
   padding-top: 1.75rem;
@@ -18,5 +19,18 @@ main.flex-grow-1 {
     margin: 0;
     font-size: 1.5rem;
     letter-spacing: -0.03em;
+  }
+}
+
+.input-group {
+  .form-control {
+    border-right: none;
+    border-radius: $radius-md 0 0 $radius-md !important;
+  }
+
+  .input-group-text {
+    border-color: $grey-200;
+    border-radius: 0 $radius-md $radius-md 0 !important;
+    background: #fff;
   }
 }
