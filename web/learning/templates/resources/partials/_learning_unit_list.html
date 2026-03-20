@@ -1,100 +1,78 @@
-<div class="card shadow-sm">
-  <div class="card-body">
+<div class="unit-card">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="fw-semibold mb-0">Learning Units</h4>
-
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-          Add Unit
-        </button>
-
-        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#bulkUnitModal">
-          Add Multiple
-        </button>
-      </div>
+  <div class="unit-card__header">
+    <h4 class="unit-card__title">Learning Units</h4>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
+        <i class="fas fa-plus me-1"></i> Add Unit
+      </button>
+      <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#bulkUnitModal">
+        <i class="fas fa-list me-1"></i> Add Multiple
+      </button>
     </div>
-
-    {% if units %}
-    <ul id="unit-list" class="list-group">
-
-      {% for unit in units %}
-      <li class="list-group-item py-3 d-flex align-items-start" data-id="{{ unit.id }}">
-
-        <!-- Drag handle -->
-        <span class="drag-handle me-3 mt-1">
-          ⋮⋮
-        </span>
-
-        <!-- Main content -->
-        <div class="d-flex justify-content-between align-items-start w-100">
-
-          <!-- LEFT SIDE -->
-          <div>
-            <div class="fw-semibold">
-              {{ unit.title }}
-              {% if unit.duration_minutes %}
-              <span class="text-muted small">• {{ unit.duration_minutes }} mins</span>
-              {% endif %}
-            </div>
-
-            {% if unit.notes %}
-            <div class="text-muted small">
-              {{ unit.notes|truncatewords:12 }}
-            </div>
-            {% endif %}
-          </div>
-
-          <!-- RIGHT SIDE -->
-          <div class="d-flex align-items-center gap-2">
-
-            <!-- Status dropdown -->
-            <form method="post" action="{% url 'learning:unit_update_status' unit.id %}">
-              {% csrf_token %}
-              <select name="status" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-
-                <option value="not_started" {% if unit.status == "not_started" %}selected{% endif %}>
-                  Not Started
-                </option>
-
-                <option value="in_progress" {% if unit.status == "in_progress" %}selected{% endif %}>
-                  In Progress
-                </option>
-
-                <option value="completed" {% if unit.status == "completed" %}selected{% endif %}>
-                  Completed
-                </option>
-
-              </select>
-            </form>
-
-            <!-- Actions -->
-            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-              data-bs-target="#editUnitModal{{ unit.id }}">
-              Edit
-            </button>
-
-            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-              data-bs-target="#deleteUnitModal{{ unit.id }}">
-              Delete
-            </button>
-
-          </div>
-
-        </div>
-
-        {% include "resources/partials/_learning_unit_edit_modal.html" %}
-        {% include "resources/partials/_learning_unit_delete_modal.html" %}
-      </li>
-      {% endfor %}
-
-    </ul>
-
-    {% else %}
-    <p class="text-muted">
-      No learning units added yet.
-    </p>
-    {% endif %}
-
   </div>
+
+  {% if units %}
+  <ul id="unit-list" class="unit-list">
+
+    {% for unit in units %}
+    <li class="unit-item" data-id="{{ unit.id }}">
+
+      <span class="drag-handle">
+        <i class="fas fa-grip-vertical"></i>
+      </span>
+
+      <div class="unit-item__body">
+        <div class="unit-item__title">
+          {{ unit.title }}
+          {% if unit.duration_minutes %}
+          <span class="unit-item__duration">
+            <i class="fas fa-clock"></i> {{ unit.duration_minutes }} mins
+          </span>
+          {% endif %}
+        </div>
+        {% if unit.notes %}
+        <div class="unit-item__notes">{{ unit.notes|truncatewords:12 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="unit-item__actions">
+
+        <form method="post" action="{% url 'learning:unit_update_status' unit.id %}">
+          {% csrf_token %}
+          <select name="status" class="unit-status-select unit-status-select--{{ unit.status }}"
+            onchange="this.form.submit()">
+            <option value="not_started" {% if unit.status == "not_started" %}selected{% endif %}>Not Started</option>
+            <option value="in_progress" {% if unit.status == "in_progress" %}selected{% endif %}>In Progress</option>
+            <option value="completed" {% if unit.status == "completed" %}selected{% endif %}>Completed</option>
+          </select>
+        </form>
+
+        <button class="unit-action-btn unit-action-btn--edit" data-bs-toggle="modal"
+          data-bs-target="#editUnitModal{{ unit.id }}">
+          <i class="fas fa-pen"></i>
+        </button>
+
+        <button class="unit-action-btn unit-action-btn--delete" data-bs-toggle="modal"
+          data-bs-target="#deleteUnitModal{{ unit.id }}">
+          <i class="fas fa-trash"></i>
+        </button>
+
+      </div>
+
+    </li>
+
+    {% include "resources/partials/_learning_unit_edit_modal.html" %}
+    {% include "resources/partials/_learning_unit_delete_modal.html" %}
+
+    {% endfor %}
+  </ul>
+
+  {% else %}
+  <div class="unit-empty">
+    <i class="fas fa-list-check unit-empty__icon"></i>
+    <p class="unit-empty__text">No units yet - add your first unit to start tracking.</p>
+  </div>
+  {% endif %}
+
 </div>
