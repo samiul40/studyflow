@@ -6,10 +6,140 @@
 // Prefer putting component-specific breakpoints next to the component,
 // and use this file for global layout shifts only.
 
+@use '../abstracts/variables' as *;
+
+// ---------------------------------------------------------------------------
+// Mobile (max 768px)
+// ---------------------------------------------------------------------------
 @media (max-width: 768px) {
+
+  // Layout
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
+
+    h2 { font-size: 1.25rem; }
+  }
+
+  // Dashboard
+  .filter-pills {
+    gap: 0.25rem;
+
+    .filter-pill {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+    }
+  }
+
+  .kpi-card {
+    padding: 1rem;
+
+    .kpi-value { font-size: 1.5rem; }
+    .kpi-icon  { width: 2.25rem; height: 2.25rem; font-size: 0.9rem; }
+  }
+
+  .chart-card {
+    padding: 1rem;
+  }
+
+  .chart-card--donut .chart-canvas-wrap {
+    height: 220px;
+  }
+
+  .progress-item__title {
+    max-width: 60%;
+  }
+
+  // Resource list
+  .resource-search {
+    max-width: 100%;
+  }
+
+  .resource-card {
+    padding: 1rem;
+  }
+
+  // Form card
+  .form-card {
+    padding: 1.25rem;
+    border-radius: $radius-lg;
+
+    &__header {
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+    }
+
+    &__icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      font-size: 0.875rem;
+    }
+
+    &__title { font-size: 1rem; }
+
+    &__actions {
+      flex-direction: column-reverse;
+      gap: 0.75rem;
+
+      .btn, .btn-cancel {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Login
+  .login-card {
+    padding: 1.5rem;
+    border-radius: $radius-lg;
+  }
+
+  // Insight banner
+  .insight-banner {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  // Recently added
+  .recent-list .recent-item {
+    padding: 0.625rem 0.875rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Small mobile (max 480px)
+// ---------------------------------------------------------------------------
+@media (max-width: 480px) {
+
+  main.flex-grow-1 {
+    padding-top: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .kpi-card {
+    padding: 0.875rem;
+    gap: 0.75rem;
+
+    .kpi-value { font-size: 1.375rem; }
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .resource-card__header {
+    flex-wrap: wrap;
+  }
+
+  .resource-card__date {
+    width: 100%;
+    order: 3;
+  }
+
+  .chart-card--donut .chart-canvas-wrap {
+    height: 180px;
   }
 }

@@ -1,102 +1,71 @@
 {% extends "base.html" %}
 
-{% block title %}
-{% if form.instance.pk %}
-Edit Resource
-{% else %}
-Add Resource
-{% endif %}
-{% endblock %}
-
 {% block breadcrumbs %}
-<nav aria-label="breadcrumb" class="mb-3">
+<nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-
-    <li class="breadcrumb-item">
-      <a href="{% url 'index' %}">Home</a>
-    </li>
-
-    <li class="breadcrumb-item">
-      <a href="{% url 'learning:resource_list' %}">
-        Resources
-      </a>
-    </li>
-
+    <li class="breadcrumb-item"><a href="{% url 'learning:dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'learning:resource_list' %}">Resources</a></li>
     {% if form.instance.pk %}
     <li class="breadcrumb-item">
-      <a href="{% url 'learning:resource_detail' form.instance.pk %}">
-        {{ form.instance.title }}
-      </a>
+      <a href="{% url 'learning:resource_detail' form.instance.pk %}">{{ form.instance.title }}</a>
     </li>
-    <li class="breadcrumb-item active">
-      Edit
-    </li>
+    <li class="breadcrumb-item active">Edit</li>
     {% else %}
-    <li class="breadcrumb-item active">
-      Add Resource
-    </li>
+    <li class="breadcrumb-item active">Add Resource</li>
     {% endif %}
-
   </ol>
 </nav>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="form-card">
 
-      <div class="card shadow-sm">
-        <div class="card-body">
-
-          <h3 class="mb-4">
-            {% if form.instance.pk %}
-            Edit Resource
-            {% else %}
-            Add Learning Resource
-            {% endif %}
+      <div class="form-card__header">
+        <div class="form-card__icon">
+          <i class="fas {% if form.instance.pk %}fa-pen{% else %}fa-plus{% endif %}"></i>
+        </div>
+        <div>
+          <h3 class="form-card__title">
+            {% if form.instance.pk %}Edit Resource{% else %}Add Learning Resource{% endif %}
           </h3>
-
-          <form method="post">
-            {% csrf_token %}
-
-            {% if form.errors %}
-            <div class="alert alert-danger">
-              Please fix the errors below.
-            </div>
-            {% endif %}
-
-            {% include "partials/_form_field.html" with field=form.title %}
-            {% include "partials/_form_field.html" with field=form.resource_type %}
-            {% include "partials/_form_field.html" with field=form.description %}
-            {% include "partials/_form_field.html" with field=form.url %}
-
-            <div class="d-flex justify-content-between">
-
-              <a href="{% url 'learning:resource_list' %}" class="btn btn-secondary">
-                Cancel
-              </a>
-              <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
-                <span class="btn-text">
-                  {% if form.instance.pk %}
-                  Update Resource
-                  {% else %}
-                  Create Resource
-                  {% endif %}
-                </span>
-                <span class="spinner-border spinner-border-sm d-none"></span>
-              </button>
-
-            </div>
-
-          </form>
-
+          <p class="form-card__subtitle">
+            {% if form.instance.pk %}Update the details below{% else %}Fill in the details to start tracking{% endif %}
+          </p>
         </div>
       </div>
 
-    </div>
-  </div>
+      {% if form.errors %}
+      <div class="alert alert-danger mb-4">
+        <i class="fas fa-circle-exclamation me-2"></i> Please fix the errors below.
+      </div>
+      {% endif %}
 
+      <form method="post">
+        {% csrf_token %}
+
+        {% include "partials/_form_field.html" with field=form.title %}
+        {% include "partials/_form_field.html" with field=form.resource_type %}
+        {% include "partials/_form_field.html" with field=form.description %}
+        {% include "partials/_form_field.html" with field=form.url %}
+
+        <div class="form-card__actions">
+          <a href="{% url 'learning:resource_list' %}" class="btn btn-cancel">
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
+            <span class="btn-text">
+              {% if form.instance.pk %}Update Resource{% else %}Create Resource{% endif %}
+            </span>
+            <span class="spinner-border spinner-border-sm d-none"></span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
 </div>
 {% endblock %}

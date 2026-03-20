@@ -1,17 +1,12 @@
-<div class="mb-3">
+<div class="mb-4">
   {{ field.label_tag }}
-
   {{ field }}
-
   {% if field.help_text %}
-  <div class="form-text">
-    {{ field.help_text }}
-  </div>
+  <div class="form-text">{{ field.help_text }}</div>
   {% endif %}
-
   {% if field.errors %}
-  <div class="text-danger small">
-    {{ field.errors }}
+  <div class="field-error">
+    <i class="fas fa-circle-exclamation me-1"></i>{{ field.errors }}
   </div>
   {% endif %}
 </div>
