@@ -219,6 +219,12 @@ htmlcov/
 static_files
 .DS_Store
 DS_Store
-node_modules
 
 .prettierrc
+
+# Node
+node_modules/
+package-lock.json
+
+# Compiled CSS (build artefacts)
+web/studyflow/static/css/main.css

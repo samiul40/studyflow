@@ -1,0 +1,16 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch:css": "sass --watch studyflow/src/sass/main.scss:studyflow/static/css/main.css --no-source-map",
+    "build:css": "sass studyflow/src/sass/main.scss studyflow/static/css/main.css --no-source-map --style=compressed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "sass": "^1.98.0"
+  }
+}
