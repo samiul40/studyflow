@@ -10,7 +10,7 @@ def test_get_login_page(client):
     res = client.get(url)
 
     assert res.status_code == 200
-    assert "Login" in res.content.decode()
+    assert "Sign in" in res.content.decode()
 
 
 def test_valid_login_redirects(client, user):

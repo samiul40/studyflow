@@ -272,3 +272,48 @@ def test_user_cannot_bulk_create_other_users_resource(client_logged_in):
     response = client_logged_in.post(url, data)
 
     assert response.status_code == 404
+
+
+def test_bulk_create_no_valid_units(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user)
+
+    url = reverse(
+        "learning:unit_bulk_create",
+        kwargs={"resource_pk": resource.pk},
+    )
+
+    data = {
+        "title[]": ["", "   ", ""],
+        "duration[]": ["10", "20", "30"],
+    }
+
+    response = client_logged_in.post(url, data, follow=True)
+
+    assert not LearningUnit.objects.filter(resource=resource).exists()
+    assert response.status_code == 200
+
+    messages = list(response.context["messages"])
+    assert any("No valid units to add." in str(m) for m in messages)
+
+
+def test_learning_unit_create_invalid_form(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user)
+
+    url = reverse(
+        "learning:unit_create",
+        kwargs={"resource_pk": resource.pk},
+    )
+
+    data = {
+        "title": "",
+        "description": "Some description",
+        "order": 1,
+    }
+
+    response = client_logged_in.post(url, data, follow=True)
+
+    assert not LearningUnit.objects.filter(resource=resource).exists()
+    assert response.status_code == 200
+
+    messages = list(response.context["messages"])
+    assert any("Title is required." in str(m) for m in messages)
