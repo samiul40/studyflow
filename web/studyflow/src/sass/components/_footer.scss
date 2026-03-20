@@ -1,0 +1,13 @@
+// =============================================================================
+// _footer.scss
+// =============================================================================
+@use '../abstracts/variables' as *;
+
+.footer {
+  background-color: #fff !important;
+  border-top: 1px solid $grey-200;
+  color: $grey-400 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 1rem 0 !important;
+}

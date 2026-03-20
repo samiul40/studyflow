@@ -1,0 +1,22 @@
+// =============================================================================
+// _layout.scss — Page shell, main container, page header
+// =============================================================================
+
+main.flex-grow-1 {
+  padding-top: 1.75rem;
+  padding-bottom: 3rem;
+}
+
+// Page header row — title + action button
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+}

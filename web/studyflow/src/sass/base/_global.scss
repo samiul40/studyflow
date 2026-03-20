@@ -1,0 +1,37 @@
+// =============================================================================
+// _global.scss — Base resets & body
+// =============================================================================
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $grey-50;
+  color: $grey-800;
+  font-family: $font-sans;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: $emerald-600;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $emerald-700;
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

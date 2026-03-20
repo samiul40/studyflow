@@ -1,0 +1,102 @@
+// =============================================================================
+// _navbar.scss
+// =============================================================================
+@use '../abstracts/variables' as *;
+
+.navbar {
+  background-color: #fff !important;
+  border-bottom: 1px solid $grey-200;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  .navbar-brand {
+    font-weight: 800;
+    font-size: 1.125rem;
+    letter-spacing: -0.03em;
+    color: $grey-900;
+
+    &::after {
+      content: '.';
+      color: $emerald-500;
+    }
+
+    &:hover { color: $grey-900; }
+  }
+
+  .nav-link {
+    color: $grey-600;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: $radius-md;
+    transition: background $transition-fast, color $transition-fast;
+
+    &:hover {
+      color: $grey-900;
+      background-color: $grey-100;
+    }
+
+    &.active {
+      color: $emerald-700;
+      background-color: $emerald-50;
+      font-weight: 600;
+    }
+  }
+
+  .navbar-user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: $radius-md;
+    border: 1px solid $grey-200;
+    background: #fff;
+    text-decoration: none;
+    transition: background $transition-fast, border-color $transition-fast;
+    cursor: pointer;
+
+    &:hover {
+      background: $grey-50;
+      border-color: $grey-300;
+    }
+
+    span {
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: $grey-700;
+    }
+  }
+
+  .dropdown-menu {
+    border: 1px solid $grey-200;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    padding: 0.375rem;
+    min-width: 220px;
+
+    .dropdown-header-info {
+      padding: 0.625rem 0.75rem 0.75rem;
+      border-bottom: 1px solid $grey-100;
+      margin-bottom: 0.375rem;
+
+      small { color: $grey-400; font-size: 0.75rem; }
+      strong { color: $grey-800; font-size: 0.875rem; }
+    }
+
+    .dropdown-item {
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $grey-700;
+      padding: 0.5rem 0.75rem;
+      transition: background $transition-fast;
+
+      &:hover { background-color: $grey-100; color: $grey-900; }
+      &.text-danger:hover { background-color: #fef2f2; }
+
+      i { width: 1rem; text-align: center; }
+    }
+
+    .dropdown-divider { margin: 0.375rem 0; border-color: $grey-100; }
+  }
+}
