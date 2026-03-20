@@ -35,3 +35,97 @@ img {
   max-width: 100%;
   display: block;
 }
+
+// ---------------------------------------------------------------------------
+// Login page
+// ---------------------------------------------------------------------------
+.login-section {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  background: #fff;
+  border: 1px solid $grey-200;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: $grey-900;
+  margin-bottom: 0.375rem;
+
+  span {
+    color: $emerald-500;
+  }
+}
+
+.login-subtitle {
+  font-size: 0.875rem;
+  color: $grey-400;
+  margin: 0;
+}
+
+.login-toggle-pass {
+  cursor: pointer;
+  background: #fff;
+  border-left: none;
+  color: $grey-400;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $grey-700;
+  }
+}
+
+// Form labels
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $grey-700;
+  margin-bottom: 0.375rem;
+}
+
+// Form controls
+.form-control {
+  border-color: $grey-200;
+  border-radius: $radius-md;
+  font-size: 0.9rem;
+  color: $grey-800;
+  padding: 0.5rem 0.75rem;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &::placeholder {
+    color: $grey-300;
+  }
+
+  &:focus {
+    border-color: $emerald-400;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+    outline: none;
+  }
+}
+
+.input-group {
+  .form-control:focus {
+    z-index: 3;
+  }
+
+  .input-group-text {
+    border-color: $grey-200;
+  }
+}

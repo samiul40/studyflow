@@ -1,52 +1,39 @@
 {% extends 'base.html' %}
 
-{% block title %} | Account Login {% endblock %}
-
 {% block content %}
-<section id="login" class="py-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 mx-auto">
-        <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h4>
-              <i class="fas fa-sign-in-alt"></i> Login
-            </h4>
-          </div>
-          <div class="card-body">
-            <form actions="{% url 'login' %}" method="POST">
-              {% csrf_token %}
-              <div class="form-group mb-4">
-                <input type="text" name="username" placeholder="username" class="form-control" required>
-              </div>
+<section class="login-section">
+  <div class="login-card">
 
-              <div class="input-group mb-4">
-                <input class="form-control" id="password" type="password" name="password" placeholder="Password"
-                  value="">
-                <span class="input-group-text" id="togglePass"><i class="fas fa-eye" id="togglePassword"></i></span>
-              </div>
+    <div class="login-header">
+      <div class="login-brand">StudyFlow<span>.</span></div>
+      <p class="login-subtitle">Sign in to your account</p>
+    </div>
 
-              <div class="col-md-12">
-                <div class="form-check d-inline-block flex-row">
-                  <input class="form-check-input" type="checkbox" value="remember_me" id="flexCheckDefault">
-                  <label class="form-check-label" for="flexCheckDefault" id="check">
-                    Remember Me
-                  </label>
-                </div>
-                <a href="" class="d-inline-block flex-row-reverse mx-2" id="forgetpassword">Forgot Password</a>
-              </div>
+    <form action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
 
-              <input type="submit" value="Login" class="btn btn-secondary btn-block mt-4" id="login-btn">
+      <div class="mb-3">
+        <label class="form-label" for="username">Username</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required
+          autofocus>
+      </div>
 
-              <div class="d-flex justify-content-center mt-3">
-                <p class=" d-inline-block">Not Registered?</p><a href="" class=" d-inline-block mx-1"
-                  id="register_account">Create an Account</a>
-              </div>
-            </form>
-          </div>
+      <div class="mb-4">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-group">
+          <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password"
+            required>
+          <span class="input-group-text login-toggle-pass" id="togglePass">
+            <i class="fas fa-eye" id="togglePassword"></i>
+          </span>
         </div>
       </div>
-    </div>
+
+      <button type="submit" class="btn btn-primary w-100">
+        Sign in
+      </button>
+
+    </form>
   </div>
 </section>
 {% endblock %}
