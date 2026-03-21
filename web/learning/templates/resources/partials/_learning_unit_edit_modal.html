@@ -14,7 +14,11 @@
 
           <input type="text" name="title" value="{{ unit.title }}" class="form-control mb-3">
 
-          <input type="number" name="duration_minutes" value="{{ unit.duration_minutes }}" class="form-control mb-3" placeholder="Duration (minutes)">
+          {% if resource.resource_type != "book" %}
+            <input type="number" name="duration_minutes" value="{{ unit.duration_minutes }}" class="form-control mb-3" placeholder="Duration (minutes)">
+
+            <input type="number" name="video_progress_minutes" value="{{ unit.video_progress_minutes }}" class="form-control mb-3" placeholder="Video Progress (minutes)">
+          {% endif %}
 
           <input type="hidden" name="order" value="{{ unit.order }}">
 

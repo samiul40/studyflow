@@ -14,7 +14,7 @@ from learning.models import LearningResource
 from learning.services import get_resource_progress
 
 
-class UserResourceMixin:
+class UserResourceMixin(LoginRequiredMixin):
     """
     Restrict queryset to resources belonging to the logged-in user.
     """
@@ -25,7 +25,7 @@ class UserResourceMixin:
         )
 
 
-class ResourceListView(LoginRequiredMixin, UserResourceMixin, ListView):
+class ResourceListView(UserResourceMixin, ListView):
     """
     Display all learning resources belonging to the logged-in user.
     """
@@ -50,7 +50,7 @@ class ResourceListView(LoginRequiredMixin, UserResourceMixin, ListView):
         return context
 
 
-class ResourceDetailView(LoginRequiredMixin, UserResourceMixin, DetailView):
+class ResourceDetailView(UserResourceMixin, DetailView):
     """
     Display details of a single learning resource.
     """
@@ -82,7 +82,7 @@ class ResourceCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ResourceUpdateView(LoginRequiredMixin, UserResourceMixin, UpdateView):
+class ResourceUpdateView(UserResourceMixin, UpdateView):
     """
     Update an existing learning resource belonging to the user.
     """
@@ -96,7 +96,7 @@ class ResourceUpdateView(LoginRequiredMixin, UserResourceMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ResourceDeleteView(LoginRequiredMixin, UserResourceMixin, DeleteView):
+class ResourceDeleteView(UserResourceMixin, DeleteView):
     """
     Delete a learning resource belonging to the user.
     """

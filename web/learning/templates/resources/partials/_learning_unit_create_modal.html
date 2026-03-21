@@ -12,10 +12,16 @@
             <label class="form-label">Title</label>
             <input type="text" name="title" class="form-control" required autofocus>
           </div>
+          {% if resource.resource_type != "book" %}
           <div class="mb-3">
             <label class="form-label">Duration (minutes)</label>
             <input type="number" name="duration_minutes" class="form-control" min="0">
           </div>
+          <div class="mb-3">
+            <label class="form-label">Video Progress (minutes)</label>
+            <input type="number" name="video_progress_minutes" class="form-control" min="0">
+          </div>
+          {% endif %}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>

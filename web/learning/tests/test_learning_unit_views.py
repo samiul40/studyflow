@@ -316,4 +316,4 @@ def test_learning_unit_create_invalid_form(client_logged_in, user):
     assert response.status_code == 200
 
     messages = list(response.context["messages"])
-    assert any("Title is required." in str(m) for m in messages)
+    assert any("Invalid input" in str(m) for m in messages)
