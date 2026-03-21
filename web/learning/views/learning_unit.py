@@ -2,6 +2,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
 from django.db.models import Case, IntegerField, Max, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -60,15 +61,16 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
     form_class = LearningUnitForm
 
     def form_valid(self, form):
-        resource = self.get_resource()
-        form.instance.resource = resource
+        form.instance.resource = self.get_resource()
         messages.success(self.request, "Unit created successfully.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Title is required.")
-        resource = self.get_resource()
-        return redirect(resource.get_absolute_url())
+        messages.error(
+            self.request,
+            form.errors.get("video_progress_minutes", ["Invalid input"])[0],
+        )
+        return redirect(self.get_success_url())
 
 
 class LearningUnitBulkCreateView(UserResourceMixin, View):
@@ -91,14 +93,18 @@ class LearningUnitBulkCreateView(UserResourceMixin, View):
             if not title.strip():
                 continue
 
-            new_units.append(
-                LearningUnit(
-                    resource=resource,
-                    title=title.strip(),
-                    duration_minutes=int(duration) if duration else 0,
-                    order=last_order + index,
-                )
+            unit = LearningUnit(
+                resource=resource,
+                title=title.strip(),
+                duration_minutes=int(duration) if duration else 0,
+                order=last_order + index,
             )
+
+            try:
+                unit.full_clean()
+                new_units.append(unit)
+            except ValidationError:
+                continue
 
         if not new_units:
             messages.warning(request, "No valid units to add.")
@@ -107,7 +113,6 @@ class LearningUnitBulkCreateView(UserResourceMixin, View):
         LearningUnit.objects.bulk_create(new_units)
 
         messages.success(request, f"{len(new_units)} units added successfully.")
-
         return redirect(resource.get_absolute_url())
 
 
@@ -121,12 +126,21 @@ class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateVie
     pk_url_kwarg = "unit_pk"
 
     def get_queryset(self):
-        resource = self.get_resource()
-        return LearningUnit.objects.filter(resource=resource)
+        return LearningUnit.objects.filter(resource=self.get_resource())
 
     def form_valid(self, form):
-        messages.success(self.request, "Unit status updated.")
+        if not form.has_changed():
+            return redirect(self.get_success_url())
+
+        messages.success(self.request, "Unit updated successfully.")
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            form.errors.get("video_progress_minutes", ["Invalid input"])[0],
+        )
+        return redirect(self.get_success_url())
 
 
 class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteView):
@@ -138,8 +152,7 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
     pk_url_kwarg = "unit_pk"
 
     def get_queryset(self):
-        resource = self.get_resource()
-        return LearningUnit.objects.filter(resource=resource)
+        return LearningUnit.objects.filter(resource=self.get_resource())
 
     def form_valid(self, form):
         unit = self.get_object()
@@ -185,15 +198,12 @@ class LearningUnitReorderView(UserResourceMixin, View):
 class LearningUnitUpdateStatusView(UserUnitMixin, View):
     def post(self, request, pk):
         unit = self.get_unit()
-
         new_status = request.POST.get("status")
 
-        if (
-            new_status in ["not_started", "in_progress", "completed"]
-            and unit.status != new_status
-        ):
-            unit.status = new_status
-            unit.save()
-            messages.success(request, "Unit status updated.")
+        if new_status in dict(LearningUnit.StatusChoices.choices):
+            if unit.status != new_status:
+                unit.status = new_status
+                unit.save()
+                messages.success(request, "Unit status updated.")
 
         return redirect(unit.resource.get_absolute_url())
