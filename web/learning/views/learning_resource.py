@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -10,11 +9,12 @@ from django.views.generic import (
 )
 
 from learning.forms import LearningResourceForm
+from learning.mixins import UserPermissionMixin
 from learning.models import LearningResource
 from learning.services import get_resource_progress
 
 
-class UserResourceMixin(LoginRequiredMixin):
+class UserResourceMixin:
     """
     Restrict queryset to resources belonging to the logged-in user.
     """
@@ -25,11 +25,12 @@ class UserResourceMixin(LoginRequiredMixin):
         )
 
 
-class ResourceListView(UserResourceMixin, ListView):
+class ResourceListView(UserPermissionMixin, UserResourceMixin, ListView):
     """
     Display all learning resources belonging to the logged-in user.
     """
 
+    permission_required = "learning.view_learningresource"
     model = LearningResource
     template_name = "resources/resource_list.html"
     context_object_name = "resources"
@@ -50,11 +51,12 @@ class ResourceListView(UserResourceMixin, ListView):
         return context
 
 
-class ResourceDetailView(UserResourceMixin, DetailView):
+class ResourceDetailView(UserPermissionMixin, UserResourceMixin, DetailView):
     """
     Display details of a single learning resource.
     """
 
+    permission_required = "learning.view_learningresource"
     model = LearningResource
     template_name = "resources/resource_detail.html"
     context_object_name = "resource"
@@ -66,11 +68,12 @@ class ResourceDetailView(UserResourceMixin, DetailView):
         return context
 
 
-class ResourceCreateView(LoginRequiredMixin, CreateView):
+class ResourceCreateView(UserPermissionMixin, CreateView):
     """
     Create a new learning resource.
     """
 
+    permission_required = "learning.add_learningresource"
     model = LearningResource
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
@@ -82,11 +85,12 @@ class ResourceCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ResourceUpdateView(UserResourceMixin, UpdateView):
+class ResourceUpdateView(UserPermissionMixin, UserResourceMixin, UpdateView):
     """
     Update an existing learning resource belonging to the user.
     """
 
+    permission_required = "learning.change_learningresource"
     model = LearningResource
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
@@ -96,11 +100,12 @@ class ResourceUpdateView(UserResourceMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ResourceDeleteView(UserResourceMixin, DeleteView):
+class ResourceDeleteView(UserPermissionMixin, UserResourceMixin, DeleteView):
     """
     Delete a learning resource belonging to the user.
     """
 
+    permission_required = "learning.delete_learningresource"
     model = LearningResource
     template_name = "resources/resource_confirm_delete.html"
     success_url = reverse_lazy("learning:resource_list")

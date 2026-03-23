@@ -54,24 +54,38 @@
     <!-- Collapsible nav links -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      {% if not user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            href="{% url 'index' %}">
+            <i class="fas fa-home me-1"></i> Home
+          </a>
+        </li>
+        {% endif %}
+        {% if perms.learning.view_dashboard %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
             href="{% url 'learning:dashboard' %}">
             <i class="fas fa-house me-1"></i> Dashboard
           </a>
         </li>
+        {% endif %}
+        {% if perms.learning.view_learningresource %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'resource_list' %}active{% endif %}"
             href="{% url 'learning:resource_list' %}">
             <i class="fas fa-folder-open me-1"></i> Resources
           </a>
         </li>
+        {% endif %}
+        {% if perms.learning.add_learningresource %}
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'resource_create' %}active{% endif %}"
             href="{% url 'learning:resource_create' %}">
             <i class="fas fa-plus me-1"></i> Add Resource
           </a>
         </li>
+        {% endif %}
       </ul>
     </div>
 
@@ -107,7 +121,8 @@
             <form method="post" action="{% url 'logout' %}">
               {% csrf_token %}
               <button type="submit" class="dropdown-item text-danger">
-                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                <i class="fas 
+                fa-sign-out-alt me-2"></i> Logout
               </button>
             </form>
           </li>
