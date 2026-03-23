@@ -25,6 +25,9 @@ class LearningResource(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        permissions = [
+            ("view_dashboard", "Can view the dashboard with learning statistics"),
+        ]
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"

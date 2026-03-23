@@ -1,7 +1,6 @@
 import json
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.db.models import Case, IntegerField, Max, When
 from django.http import JsonResponse
@@ -11,10 +10,11 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from learning.forms import LearningUnitForm
+from learning.mixins import UserPermissionMixin
 from learning.models import LearningResource, LearningUnit
 
 
-class UserResourceMixin(LoginRequiredMixin):
+class UserResourceMixin:
     """
     Ensures the resource belongs to the logged-in user.
     """
@@ -27,7 +27,7 @@ class UserResourceMixin(LoginRequiredMixin):
         )
 
 
-class UserUnitMixin(LoginRequiredMixin):
+class UserUnitMixin:
     """
     Ensures the learning unit belongs to the logged-in user.
     """
@@ -52,11 +52,14 @@ class ResourceRedirectMixin:
         )
 
 
-class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateView):
+class LearningUnitCreateView(
+    UserPermissionMixin, UserResourceMixin, ResourceRedirectMixin, CreateView
+):
     """
     Create a learning unit within a resource.
     """
 
+    permission_required = "learning.add_learningunit"
     model = LearningUnit
     form_class = LearningUnitForm
 
@@ -73,7 +76,11 @@ class LearningUnitCreateView(UserResourceMixin, ResourceRedirectMixin, CreateVie
         return redirect(self.get_success_url())
 
 
-class LearningUnitBulkCreateView(UserResourceMixin, View):
+class LearningUnitBulkCreateView(UserPermissionMixin, UserResourceMixin, View):
+    """Create multiple learning units at once from a form with dynamic fields."""
+
+    permission_required = "learning.add_learningunit"
+
     def post(self, request, *args, **kwargs):
         resource = self.get_resource()
 
@@ -116,11 +123,14 @@ class LearningUnitBulkCreateView(UserResourceMixin, View):
         return redirect(resource.get_absolute_url())
 
 
-class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateView):
+class LearningUnitUpdateView(
+    UserPermissionMixin, UserResourceMixin, ResourceRedirectMixin, UpdateView
+):
     """
     Update an existing learning unit.
     """
 
+    permission_required = "learning.change_learningunit"
     model = LearningUnit
     form_class = LearningUnitForm
     pk_url_kwarg = "unit_pk"
@@ -143,11 +153,14 @@ class LearningUnitUpdateView(UserResourceMixin, ResourceRedirectMixin, UpdateVie
         return redirect(self.get_success_url())
 
 
-class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteView):
+class LearningUnitDeleteView(
+    UserPermissionMixin, UserResourceMixin, ResourceRedirectMixin, DeleteView
+):
     """
     Delete a learning unit.
     """
 
+    permission_required = "learning.delete_learningunit"
     model = LearningUnit
     pk_url_kwarg = "unit_pk"
 
@@ -172,10 +185,12 @@ class LearningUnitDeleteView(UserResourceMixin, ResourceRedirectMixin, DeleteVie
         return response
 
 
-class LearningUnitReorderView(UserResourceMixin, View):
+class LearningUnitReorderView(UserPermissionMixin, UserResourceMixin, View):
     """
     Update learning unit order after drag-and-drop.
     """
+
+    permission_required = "learning.change_learningunit"
 
     def post(self, request, resource_pk):
         resource = self.get_resource()
@@ -195,7 +210,13 @@ class LearningUnitReorderView(UserResourceMixin, View):
         return JsonResponse({"status": "ok"})
 
 
-class LearningUnitUpdateStatusView(UserUnitMixin, View):
+class LearningUnitUpdateStatusView(UserPermissionMixin, UserUnitMixin, View):
+    """
+    Update the status of a learning unit (e.g. mark as completed).
+    """
+
+    permission_required = "learning.change_learningunit"
+
     def post(self, request, pk):
         unit = self.get_unit()
         new_status = request.POST.get("status")

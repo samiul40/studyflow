@@ -3,12 +3,16 @@
   <div class="unit-card__header">
     <h4 class="unit-card__title">Learning Units</h4>
     <div class="d-flex gap-2">
+      {% if perms.learning.add_learningunit %}
       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUnitModal">
         <i class="fas fa-plus me-1"></i> Add Unit
       </button>
+      {% endif %}
+      {% if perms.learning.add_learningunit %}
       <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#bulkUnitModal">
         <i class="fas fa-list me-1"></i> Add Multiple
       </button>
+      {% endif %}
     </div>
   </div>
 
@@ -38,6 +42,7 @@
 
       <div class="unit-item__actions">
 
+        {% if perms.learning.change_learningunit %}
         <form method="post" action="{% url 'learning:unit_update_status' unit.id %}">
           {% csrf_token %}
           <select name="status" class="unit-status-select unit-status-select--{{ unit.status }}"
@@ -47,16 +52,21 @@
             <option value="completed" {% if unit.status == "completed" %}selected{% endif %}>Completed</option>
           </select>
         </form>
+        {% endif %}
 
+        {% if perms.learning.change_learningunit %}
         <button class="unit-action-btn unit-action-btn--edit" data-bs-toggle="modal"
           data-bs-target="#editUnitModal{{ unit.id }}">
           <i class="fas fa-pen"></i>
         </button>
+        {% endif %}
 
+        {% if perms.learning.delete_learningunit %}
         <button class="unit-action-btn unit-action-btn--delete" data-bs-toggle="modal"
           data-bs-target="#deleteUnitModal{{ unit.id }}">
           <i class="fas fa-trash"></i>
         </button>
+        {% endif %}
 
       </div>
 
