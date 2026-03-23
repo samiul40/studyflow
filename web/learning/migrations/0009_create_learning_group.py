@@ -35,5 +35,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_learning_group),
+        migrations.RunPython(create_learning_group, migrations.RunPython.noop)
     ]
