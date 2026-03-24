@@ -1,13 +1,33 @@
+from typing import List, Optional, TypedDict
+
 from django.db.models import Count, Q
 
 from learning.models import LearningResource, LearningUnit
 
-
-def calculate_percentage(part, total):
-    return int((part / total) * 100) if total > 0 else 0
+from .utils import calculate_percentage
 
 
-def get_dashboard_stats(user=None, resource_type=None) -> dict:
+class ResourceProgress(TypedDict):
+    id: int
+    title: str
+    percent: int
+
+
+class DashboardStats(TypedDict):
+    total_resources: int
+    total_units: int
+    completed_units: int
+    incomplete_units: int
+    completion_rate: int
+    resource_progress: List[ResourceProgress]
+    most_progress: Optional[ResourceProgress]
+    least_progress: Optional[ResourceProgress]
+    recent_resources: list
+    active_filter: Optional[str]
+    type_counts: dict[str, int]
+
+
+def get_dashboard_stats(user=None, resource_type=None) -> DashboardStats:
     """
     Return dashboard statistics for learning resources.
 
@@ -68,11 +88,7 @@ def get_dashboard_stats(user=None, resource_type=None) -> dict:
 
     recent_resources = resource_qs.order_by("-created_at")[:5]
 
-    type_counts_raw = (
-        LearningResource.objects.filter(user=user)
-        .values("resource_type")
-        .annotate(count=Count("id"))
-    )
+    type_counts_raw = resource_qs.values("resource_type").annotate(count=Count("id"))
 
     type_counts_map = {item["resource_type"]: item["count"] for item in type_counts_raw}
 

@@ -1,7 +1,11 @@
 from django.db.models import Sum
 
+from learning.models import LearningResource
 
-def get_resource_progress(resource):
+from .utils import calculate_percentage
+
+
+def get_resource_progress(resource: LearningResource) -> dict[str, int]:
     """
     Calculate progress statistics for a learning resource.
     """
@@ -11,9 +15,7 @@ def get_resource_progress(resource):
     completed_units = units.filter(status="completed").count()
     remaining_units = total_units - completed_units
 
-    completion_percentage = (
-        round((completed_units / total_units) * 100) if total_units > 0 else 0
-    )
+    completion_percentage = calculate_percentage(completed_units, total_units)
 
     total_duration = units.aggregate(total=Sum("duration_minutes"))["total"] or 0
 

@@ -14,36 +14,38 @@ from learning.models import LearningResource
 from learning.services import get_resource_progress
 
 
-class UserResourceMixin:
+class BaseUserResourceView(UserPermissionMixin):
     """
-    Restrict queryset to resources belonging to the logged-in user.
+    Base view for learning resource views that restricts the queryset
+    to resources owned by the currently authenticated user.
     """
 
+    model = LearningResource
+
     def get_queryset(self):
-        return LearningResource.objects.filter(user=self.request.user).select_related(
-            "user"
+        return LearningResource.objects.for_user(self.request.user).order_by(
+            "-created_at"
         )
 
 
-class ResourceListView(UserPermissionMixin, UserResourceMixin, ListView):
+class ResourceListView(BaseUserResourceView, ListView):
     """
     Display all learning resources belonging to the logged-in user.
     """
 
     permission_required = "learning.view_learningresource"
-    model = LearningResource
     template_name = "resources/resource_list.html"
     context_object_name = "resources"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        qs = super().get_queryset().with_progress().select_related("user")
 
         search_query = self.request.GET.get("search", "").strip()
 
         if search_query:
-            queryset = queryset.filter(title__icontains=search_query)
+            qs = qs.filter(title__icontains=search_query)
 
-        return queryset
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,15 +53,17 @@ class ResourceListView(UserPermissionMixin, UserResourceMixin, ListView):
         return context
 
 
-class ResourceDetailView(UserPermissionMixin, UserResourceMixin, DetailView):
+class ResourceDetailView(BaseUserResourceView, DetailView):
     """
     Display details of a single learning resource.
     """
 
     permission_required = "learning.view_learningresource"
-    model = LearningResource
     template_name = "resources/resource_detail.html"
     context_object_name = "resource"
+
+    def get_queryset(self):
+        return super().get_queryset().with_progress()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,13 +89,12 @@ class ResourceCreateView(UserPermissionMixin, CreateView):
         return super().form_valid(form)
 
 
-class ResourceUpdateView(UserPermissionMixin, UserResourceMixin, UpdateView):
+class ResourceUpdateView(BaseUserResourceView, UpdateView):
     """
     Update an existing learning resource belonging to the user.
     """
 
     permission_required = "learning.change_learningresource"
-    model = LearningResource
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
 
@@ -100,7 +103,7 @@ class ResourceUpdateView(UserPermissionMixin, UserResourceMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ResourceDeleteView(UserPermissionMixin, UserResourceMixin, DeleteView):
+class ResourceDeleteView(BaseUserResourceView, DeleteView):
     """
     Delete a learning resource belonging to the user.
     """
@@ -109,10 +112,6 @@ class ResourceDeleteView(UserPermissionMixin, UserResourceMixin, DeleteView):
     model = LearningResource
     template_name = "resources/resource_confirm_delete.html"
     success_url = reverse_lazy("learning:resource_list")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, "Resource deleted successfully.")
-        return super().delete(request, *args, **kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, "Resource deleted successfully.")
