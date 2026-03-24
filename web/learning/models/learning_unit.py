@@ -64,6 +64,17 @@ class LearningUnit(models.Model):
     def __str__(self):
         return f"{self.title} ({self.resource.title})"
 
+    @property
+    def is_status_locked(self):
+        return self.video_progress_minutes is not None
+
+    @property
+    def progress_percent(self):
+        if not self.duration_minutes or self.video_progress_minutes is None:
+            return 0
+
+        return int((self.video_progress_minutes / self.duration_minutes) * 100)
+
     def clean(self):
         """Ensure video progress does not exceed total duration."""
         if (

@@ -29,12 +29,19 @@
       <div class="unit-item__body">
         <div class="unit-item__title">
           {{ unit.title }}
-          {% if unit.duration_minutes %}
+
+          {% if unit.duration_minutes and unit.video_progress_minutes != none %}
+          <span class="unit-item__duration">
+            <i class="fas fa-clock"></i> {{ unit.video_progress_minutes }} / {{ unit.duration_minutes }} mins ({{ unit.progress_percent}}%)
+          </span>
+          {% else %}
           <span class="unit-item__duration">
             <i class="fas fa-clock"></i> {{ unit.duration_minutes }} mins
           </span>
           {% endif %}
+
         </div>
+
         {% if unit.notes %}
         <div class="unit-item__notes">{{ unit.notes|truncatewords:12 }}</div>
         {% endif %}
@@ -45,8 +52,8 @@
         {% if perms.learning.change_learningunit %}
         <form method="post" action="{% url 'learning:unit_update_status' unit.id %}">
           {% csrf_token %}
-          <select name="status" class="unit-status-select unit-status-select--{{ unit.status }}"
-            onchange="this.form.submit()">
+          <select name="status" {% if unit.is_status_locked %}disabled{% endif %}
+            class="unit-status-select unit-status-select--{{ unit.status }}" onchange="this.form.submit()">
             <option value="not_started" {% if unit.status == "not_started" %}selected{% endif %}>Not Started</option>
             <option value="in_progress" {% if unit.status == "in_progress" %}selected{% endif %}>In Progress</option>
             <option value="completed" {% if unit.status == "completed" %}selected{% endif %}>Completed</option>
