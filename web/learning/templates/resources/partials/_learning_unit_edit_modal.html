@@ -11,13 +11,14 @@
         </div>
 
         <div class="modal-body">
-
           <input type="text" name="title" value="{{ unit.title }}" class="form-control mb-3">
 
           {% if resource.resource_type != "book" %}
-            <input type="number" name="duration_minutes" value="{{ unit.duration_minutes }}" class="form-control mb-3" placeholder="Duration (minutes)">
-
-            <input type="number" name="video_progress_minutes" value="{{ unit.video_progress_minutes }}" class="form-control mb-3" placeholder="Video Progress (minutes)">
+          <input type="number" name="duration_minutes" value="{{ unit.duration_minutes|default_if_none:'' }}"
+            class="form-control mb-3" placeholder="Duration (minutes)">
+          <input type="number" name="video_progress_minutes"
+            value="{{ unit.video_progress_minutes|default_if_none:'' }}" class="form-control mb-3"
+            placeholder="Video Progress (minutes)">
           {% endif %}
 
           <input type="hidden" name="order" value="{{ unit.order }}">
@@ -27,7 +28,7 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
             Cancel
           </button>
           <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
