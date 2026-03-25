@@ -45,11 +45,11 @@
             {{ resource.get_resource_type_display }}
           </span>
           <span class="status-badge
-            {% if percentage == 0 %}status-badge--not-started
-            {% elif percentage == 100 %}status-badge--completed
+            {% if resource.percentage == 0 %}status-badge--not-started
+            {% elif resource.percentage == 100 %}status-badge--completed
             {% else %}status-badge--in-progress{% endif %}">
-            {% if percentage == 0 %}Not Started
-            {% elif percentage == 100 %}Completed
+            {% if resource.percentage == 0 %}Not Started
+            {% elif resource.percentage == 100 %}Completed
             {% else %}In Progress{% endif %}
           </span>
         </div>

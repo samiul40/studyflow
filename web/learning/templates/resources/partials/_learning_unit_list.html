@@ -34,7 +34,7 @@
           <span class="unit-item__duration">
             <i class="fas fa-clock"></i> {{ unit.video_progress_minutes }} / {{ unit.duration_minutes }} mins ({{ unit.progress_percent}}%)
           </span>
-          {% else %}
+          {% elif unit.duration_minutes %}
           <span class="unit-item__duration">
             <i class="fas fa-clock"></i> {{ unit.duration_minutes }} mins
           </span>

@@ -5,6 +5,18 @@ from .models.learning_unit import LearningUnit
 
 
 class LearningResourceForm(forms.ModelForm):
+    unit_count = forms.IntegerField(
+        required=False,
+        min_value=1,
+        label="Number of units",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "e.g. 10",
+            }
+        ),
+    )
+
     class Meta:
         model = LearningResource
         fields = ["title", "resource_type", "description", "url"]

@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -10,7 +10,7 @@ from django.views.generic import (
 
 from learning.forms import LearningResourceForm
 from learning.mixins import UserPermissionMixin
-from learning.models import LearningResource
+from learning.models import LearningResource, LearningUnit
 from learning.services import get_resource_progress
 
 
@@ -81,12 +81,39 @@ class ResourceCreateView(UserPermissionMixin, CreateView):
     model = LearningResource
     form_class = LearningResourceForm
     template_name = "resources/resource_form.html"
-    success_url = reverse_lazy("learning:resource_list")
+
+    def get_success_url(self):
+        return reverse("learning:resource_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        response = super().form_valid(form)
+
+        unit_count = form.cleaned_data.get("unit_count")
+
+        if unit_count:
+            name_map = {
+                "book": "Chapter",
+                "udemy": "Section",
+                "youtube": "Video",
+            }
+
+            unit_label = name_map.get(self.object.resource_type, "Unit")
+
+            units = [
+                LearningUnit(
+                    resource=self.object,
+                    title=f"{unit_label} {i + 1}",
+                    order=i + 1,
+                )
+                for i in range(unit_count)
+            ]
+
+            LearningUnit.objects.bulk_create(units)
+
         messages.success(self.request, "Resource created successfully.")
-        return super().form_valid(form)
+        return response
 
 
 class ResourceUpdateView(BaseUserResourceView, UpdateView):

@@ -48,6 +48,13 @@
 
         {% include "partials/_form_field.html" with field=form.title %}
         {% include "partials/_form_field.html" with field=form.resource_type %}
+        
+        {% if not form.instance.pk%}
+        <div id="unit-count-wrapper">
+          {% include "partials/_form_field.html" with field=form.unit_count %}
+        </div>
+        {% endif %}
+        
         {% include "partials/_form_field.html" with field=form.description %}
         {% include "partials/_form_field.html" with field=form.url %}
 
