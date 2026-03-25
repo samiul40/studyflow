@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const unitField = document.getElementById("id_unit_count");
     const wrapper = document.getElementById("unit-count-wrapper");
 
+    if (!typeField || !unitField) return;
+
     const labelMap = {
       book: "Number of chapters",
       udemy: "Number of sections",

@@ -1,4 +1,4 @@
-<div class="modal fade" id="bulkUnitModal" tabindex="-1">
+<div class="modal fade" id="bulkUnitModal" tabindex="-1" data-resource-type="{{ resource.resource_type }}">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <form method="post" action="{% url 'learning:unit_bulk_create' resource.pk %}">
@@ -12,13 +12,16 @@
             <thead>
               <tr>
                 <th>Title</th>
+                {% if resource.resource_type != "book" %}
                 <th style="width: 160px;">Duration (mins)</th>
+                {% endif %}
                 <th style="width: 48px;"></th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addRow()">
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+            onclick="addRow('', '', '{{ resource.resource_type }}')">
             <i class="fas fa-plus me-1"></i> Add Row
           </button>
         </div>
