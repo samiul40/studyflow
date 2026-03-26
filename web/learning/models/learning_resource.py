@@ -6,12 +6,15 @@ from .querysets import LearningResourceQuerySet
 
 
 class LearningResource(models.Model):
-    RESOURCE_TYPES = [
-        ("udemy", "Udemy"),
-        ("book", "Book"),
-        ("youtube", "YouTube"),
-        ("other", "Other"),
-    ]
+    """Represents a user-owned learning resource."""
+
+    class ResourceType(models.TextChoices):
+        """Defines the possible resource type for a learning resource."""
+
+        UDEMY = "udemy", "Udemy"
+        BOOK = "book", "Book"
+        YOUTUBE = "youtube", "YouTube"
+        OTHER = "other", "Other"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -19,7 +22,7 @@ class LearningResource(models.Model):
         related_name="learning_resources",
     )
     title = models.CharField(max_length=255)
-    resource_type = models.CharField(max_length=50, choices=RESOURCE_TYPES)
+    resource_type = models.CharField(max_length=50, choices=ResourceType.choices)
     description = models.TextField(blank=True)
     url = models.URLField(blank=True, help_text="Optional link to the resource")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,6 +31,7 @@ class LearningResource(models.Model):
     objects = LearningResourceQuerySet.as_manager()
 
     class Meta:
+        db_table = "learning_resource"
         ordering = ["-created_at"]
         permissions = [
             ("view_dashboard", "Can view the dashboard with learning statistics"),

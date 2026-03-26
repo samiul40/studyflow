@@ -20,8 +20,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("No users found. Create a user first."))
             return
 
-        resource_types = ["udemy", "book", "youtube", "other"]
-
         self.stdout.write(self.style.SUCCESS("Creating learning resources..."))
 
         resources = []
@@ -30,7 +28,7 @@ class Command(BaseCommand):
             resource = LearningResource.objects.create(
                 user=user,
                 title=fake.sentence(nb_words=4),
-                resource_type=random.choice(resource_types),
+                resource_type=random.choice(LearningResource.ResourceType.values),
                 description=fake.text(max_nb_chars=120),
             )
 
@@ -41,15 +39,19 @@ class Command(BaseCommand):
         for resource in resources:
             unit_count = random.randint(5, 20)
             for i in range(1, unit_count + 1):
-                status = random.choice(["not_started", "in_progress", "completed"])
-                duration = random.randint(5, 25)
+                status = random.choice(LearningUnit.StatusChoices.values)
+
+                duration = None
                 progress = None
+                if resource.resource_type != LearningResource.ResourceType.BOOK:
+                    duration = random.randint(5, 25)
+                    progress = None
 
-                if status == "in_progress":
-                    progress = random.randint(1, duration)
+                    if status == LearningUnit.StatusChoices.IN_PROGRESS:
+                        progress = random.randint(1, duration)
 
-                if status == "completed":
-                    progress = duration
+                    if status == LearningUnit.StatusChoices.COMPLETED:
+                        progress = duration
 
                 LearningUnit.objects.create(
                     resource=resource,
