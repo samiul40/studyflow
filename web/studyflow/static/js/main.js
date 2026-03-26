@@ -8,7 +8,6 @@ function handleSubmit(button) {
   button.form.submit();
 }
 
-
 // Resource Form Logic
 function initResourceForm() {
   const typeField = document.getElementById("id_resource_type");
@@ -44,7 +43,6 @@ function initResourceForm() {
   updateUI();
   typeField.addEventListener("change", updateUI);
 }
-
 
 // Bulk Unit Modal Logic
 function addRow(title = "", duration = "", resourceType = "") {
@@ -99,9 +97,26 @@ function initBulkModal() {
   });
 }
 
+// Toggle password
+function togglePassword() {
+  const toggle = document.getElementById("togglePass");
+  const icon = document.getElementById("togglePassword");
+  const password = document.getElementById("password");
+
+  if (!toggle || !password || !icon) return;
+
+  toggle.addEventListener("click", () => {
+    const isPassword = password.type === "password";
+    password.type = isPassword ? "text" : "password";
+
+    icon.classList.toggle("fa-eye");
+    icon.classList.toggle("fa-eye-slash");
+  });
+}
 
 // Init All
 document.addEventListener("DOMContentLoaded", function () {
   initResourceForm();
   initBulkModal();
+  togglePassword();
 });
