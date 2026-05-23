@@ -7,6 +7,8 @@ from .views import (
     LearningUnitReorderView,
     LearningUnitUpdateStatusView,
     LearningUnitUpdateView,
+    ResourceArchiveListView,
+    ResourceArchiveView,
     ResourceCreateView,
     ResourceDeleteView,
     ResourceDetailView,
@@ -26,8 +28,16 @@ urlpatterns = [
         LearningUnitBulkCreateView.as_view(),
         name="unit_bulk_create",
     ),
-    path("<int:pk>/edit/", ResourceUpdateView.as_view(), name="resource_update"),
-    path("<int:pk>/delete/", ResourceDeleteView.as_view(), name="resource_delete"),
+    path(
+        "<int:pk>/edit/",
+        ResourceUpdateView.as_view(),
+        name="resource_update",
+    ),
+    path(
+        "<int:pk>/delete/",
+        ResourceDeleteView.as_view(),
+        name="resource_delete",
+    ),
     path(
         "<int:resource_pk>/units/add/",
         LearningUnitCreateView.as_view(),
@@ -54,4 +64,14 @@ urlpatterns = [
         name="unit_update_status",
     ),
     path("dashboard/", dashboard_view, name="dashboard"),
+    path(
+        "<int:pk>/archive/",
+        ResourceArchiveView.as_view(),
+        name="resource_archive",
+    ),
+    path(
+        "archived/",
+        ResourceArchiveListView.as_view(),
+        name="resource_archive_list",
+    ),
 ]

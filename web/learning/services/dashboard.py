@@ -76,8 +76,8 @@ def get_dashboard_stats(user=None, resource_type=None) -> DashboardStats:
 
 def _build_querysets(user, resource_type):
     """Apply user and resource type filters to the base querysets."""
-    resource_qs = LearningResource.objects.all()
-    unit_qs = LearningUnit.objects.all()
+    resource_qs = LearningResource.objects.active()
+    unit_qs = LearningUnit.objects.filter(resource__is_archived=False)
 
     if user is not None:
         resource_qs = resource_qs.filter(user=user)
@@ -119,9 +119,9 @@ def _get_resource_types_with_counts(user) -> list:
     if user is None:
         return []
 
-    types = ResourceType.objects.filter(resources__user=user).annotate(
-        count=Count("resources")
-    )
+    types = ResourceType.objects.filter(
+        resources__user=user, resources__is_archived=False
+    ).annotate(count=Count("resources"))
     return [{"type": rt, "count": rt.count} for rt in types]
 
 

@@ -15,6 +15,12 @@ class LearningResourceQuerySet(models.QuerySet):
     def for_user(self, user):
         return self.filter(user=user)
 
+    def active(self):
+        return self.filter(is_archived=False)
+
+    def archived(self):
+        return self.filter(is_archived=True)
+
     def with_progress(self):
         return self.annotate(
             total_units=Count("units"),

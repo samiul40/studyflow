@@ -14,13 +14,18 @@
 <!-- Page header -->
 <div class="page-header">
   <h2>Learning Resources</h2>
-  {% if not search_query or resources %}
-  {% if perms.learning.add_learningresource %}
-  <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
-    <i class="fas fa-plus me-1"></i> Add Resource
-  </a>
-  {% endif %}
-  {% endif %}
+  <div class="d-flex gap-2">
+    <a href="{% url 'learning:resource_archive_list' %}" class="btn btn-outline-secondary">
+      <i class="fas fa-box-archive me-1"></i> Archived
+    </a>
+    {% if not search_query or resources %}
+    {% if perms.learning.add_learningresource %}
+    <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
+      <i class="fas fa-plus me-1"></i> Add Resource
+    </a>
+    {% endif %}
+    {% endif %}
+  </div>
 </div>
 
 <!-- Search & type filter -->

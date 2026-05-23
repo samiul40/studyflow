@@ -1,5 +1,7 @@
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -23,8 +25,10 @@ class BaseUserResourceView(UserPermissionMixin):
     model = LearningResource
 
     def get_queryset(self):
-        return LearningResource.objects.for_user(self.request.user).order_by(
-            "-created_at"
+        return (
+            LearningResource.objects.for_user(self.request.user)
+            .active()
+            .order_by("-created_at")
         )
 
 
@@ -74,7 +78,12 @@ class ResourceDetailView(BaseUserResourceView, DetailView):
     context_object_name = "resource"
 
     def get_queryset(self):
-        return super().get_queryset().with_progress()
+        # Include archived so the user can view and unarchive from the detail page.
+        return (
+            LearningResource.objects.for_user(self.request.user)
+            .with_progress()
+            .order_by("-created_at")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -143,3 +152,40 @@ class ResourceDeleteView(BaseUserResourceView, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "Resource deleted successfully.")
         return super().form_valid(form)
+
+
+class ResourceArchiveView(UserPermissionMixin, View):
+    """
+    Toggle the archived state of a learning resource (POST only).
+    """
+
+    permission_required = "learning.change_learningresource"
+
+    def post(self, request, pk):
+        resource = get_object_or_404(LearningResource, pk=pk, user=request.user)
+        resource.is_archived = not resource.is_archived
+        resource.save(update_fields=["is_archived", "updated_at"])
+        if resource.is_archived:
+            messages.success(request, "Resource archived.")
+            return redirect("learning:resource_list")
+        messages.success(request, "Resource unarchived.")
+        return redirect(resource.get_absolute_url())
+
+
+class ResourceArchiveListView(BaseUserResourceView, ListView):
+    """
+    Display all archived learning resources belonging to the logged-in user.
+    """
+
+    permission_required = "learning.view_learningresource"
+    template_name = "resources/resource_archive_list.html"
+    context_object_name = "resources"
+
+    def get_queryset(self):
+        return (
+            LearningResource.objects.for_user(self.request.user)
+            .archived()
+            .with_progress()
+            .select_related("user", "resource_type")
+            .order_by("-updated_at")
+        )

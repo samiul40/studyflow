@@ -25,6 +25,7 @@ class LearningResource(models.Model):
         blank=True,
         help_text="Optional link to the resource",
     )
+    is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,5 +1,7 @@
 from .dashboard import dashboard_view
 from .learning_resource import (
+    ResourceArchiveListView,
+    ResourceArchiveView,
     ResourceCreateView,
     ResourceDeleteView,
     ResourceDetailView,
@@ -16,6 +18,8 @@ from .learning_unit import (
 )
 
 __all__ = [
+    "ResourceArchiveListView",
+    "ResourceArchiveView",
     "ResourceCreateView",
     "ResourceDeleteView",
     "ResourceDetailView",
