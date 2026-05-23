@@ -1,0 +1,14 @@
+.env
+web/venv/
+web/node_modules/
+web/.env
+web/htmlcov/
+web/.coverage
+web/.pytest_cache/
+web/.ruff_cache/
+web/static_files/
+web/db.sqlite3
+.git/
+.DS_Store
+*.pyc
+__pycache__/
