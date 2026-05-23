@@ -8,6 +8,25 @@ function handleSubmit(button) {
   button.form.submit();
 }
 
+// Duration picker: syncs h/m visible inputs → hidden total-minutes field
+function initDurationPickers(root) {
+  root.querySelectorAll(".duration-picker").forEach(picker => {
+    const hoursInput = picker.querySelector(".dp-hours");
+    const minsInput = picker.querySelector(".dp-mins");
+    const hidden = picker.querySelector("input[type='hidden']");
+    if (!hoursInput || !minsInput || !hidden) return;
+
+    function sync() {
+      const h = parseInt(hoursInput.value) || 0;
+      const m = parseInt(minsInput.value) || 0;
+      hidden.value = h * 60 + m || "";
+    }
+
+    hoursInput.addEventListener("input", sync);
+    minsInput.addEventListener("input", sync);
+  });
+}
+
 // Bulk Unit Modal Logic
 function addRow(title = "", duration = "", contentKind = "") {
   const table = document.querySelector("#units-table tbody");
@@ -15,11 +34,23 @@ function addRow(title = "", duration = "", contentKind = "") {
 
   const row = document.createElement("tr");
 
+  const totalMins = parseInt(duration) || 0;
+  const durationHours = Math.floor(totalMins / 60);
+  const durationMins = totalMins % 60;
+
   const durationCell =
     contentKind !== "reading"
       ? `
         <td>
-          <input type="number" name="duration[]" class="form-control" value="${duration}">
+          <div class="duration-picker">
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control dp-hours" min="0" placeholder="h" value="${durationHours || ""}">
+              <span class="input-group-text">h</span>
+              <input type="number" class="form-control dp-mins" min="0" max="59" placeholder="m" value="${durationMins || ""}">
+              <span class="input-group-text">m</span>
+            </div>
+            <input type="hidden" name="duration[]" value="${duration}">
+          </div>
         </td>
       `
       : "";
@@ -40,6 +71,7 @@ function addRow(title = "", duration = "", contentKind = "") {
     row.remove();
   });
 
+  initDurationPickers(row);
   table.appendChild(row);
 }
 
@@ -58,6 +90,27 @@ function initBulkModal() {
     for (let i = 0; i < 5; i++) {
       addRow("", "", contentKind);
     }
+  });
+}
+
+// Mark as Complete button — copies duration picker values into progress picker
+function initMarkComplete(root) {
+  root.querySelectorAll('[data-action="mark-complete"]').forEach(btn => {
+    btn.addEventListener("click", () => {
+      const modal = btn.closest(".modal");
+      if (!modal) return;
+
+      const pickers = modal.querySelectorAll(".duration-picker");
+      if (pickers.length < 2) return;
+
+      const durationPicker = pickers[0];
+      const progressPicker = pickers[1];
+
+      progressPicker.querySelector(".dp-hours").value = durationPicker.querySelector(".dp-hours").value;
+      progressPicker.querySelector(".dp-mins").value = durationPicker.querySelector(".dp-mins").value;
+
+      progressPicker.querySelector(".dp-hours").dispatchEvent(new Event("input"));
+    });
   });
 }
 
@@ -82,4 +135,6 @@ function togglePassword() {
 document.addEventListener("DOMContentLoaded", function () {
   initBulkModal();
   togglePassword();
+  initDurationPickers(document);
+  initMarkComplete(document);
 });

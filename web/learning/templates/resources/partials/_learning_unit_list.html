@@ -1,3 +1,4 @@
+{% load learning_filters %}
 <div class="unit-card">
 
   <div class="unit-card__header">
@@ -32,11 +33,11 @@
 
           {% if unit.duration_minutes and unit.video_progress_minutes != none %}
           <span class="unit-item__duration">
-            <i class="fas fa-clock"></i> {{ unit.video_progress_minutes }} / {{ unit.duration_minutes }} mins ({{ unit.progress_percent}}%)
+            <i class="fas fa-clock"></i> {{ unit.video_progress_minutes|format_duration }} / {{ unit.duration_minutes|format_duration }} ({{ unit.progress_percent}}%)
           </span>
           {% elif unit.duration_minutes %}
           <span class="unit-item__duration">
-            <i class="fas fa-clock"></i> {{ unit.duration_minutes }} mins
+            <i class="fas fa-clock"></i> {{ unit.duration_minutes|format_duration }}
           </span>
           {% endif %}
 

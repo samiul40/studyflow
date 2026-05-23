@@ -14,12 +14,28 @@
           </div>
           {% if resource.resource_type.content_kind != "reading" %}
           <div class="mb-3">
-            <label class="form-label">Duration (minutes)</label>
-            <input type="number" name="duration_minutes" class="form-control" min="0">
+            <label class="form-label">Duration</label>
+            <div class="duration-picker">
+              <div class="input-group">
+                <input type="number" class="form-control dp-hours" min="0" placeholder="h">
+                <span class="input-group-text">h</span>
+                <input type="number" class="form-control dp-mins" min="0" max="59" placeholder="m">
+                <span class="input-group-text">m</span>
+              </div>
+              <input type="hidden" name="duration_minutes">
+            </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Video Progress (minutes)</label>
-            <input type="number" name="video_progress_minutes" class="form-control" min="0">
+            <label class="form-label">Video Progress</label>
+            <div class="duration-picker">
+              <div class="input-group">
+                <input type="number" class="form-control dp-hours" min="0" placeholder="h">
+                <span class="input-group-text">h</span>
+                <input type="number" class="form-control dp-mins" min="0" max="59" placeholder="m">
+                <span class="input-group-text">m</span>
+              </div>
+              <input type="hidden" name="video_progress_minutes">
+            </div>
           </div>
           {% endif %}
         </div>
