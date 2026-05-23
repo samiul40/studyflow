@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load learning_filters %}
 
 {% block breadcrumbs %}
 <nav aria-label="breadcrumb">
@@ -136,24 +137,24 @@
           <div class="stats-item__icon stats-item__icon--emerald">
             <i class="fas fa-clock"></i>
           </div>
-          <div class="stats-item__value">{{ completed_duration }}</div>
-          <div class="stats-item__label">Mins Done</div>
+          <div class="stats-item__value">{{ completed_duration|format_duration }}</div>
+          <div class="stats-item__label">Time Done</div>
         </div>
 
         <div class="stats-item">
           <div class="stats-item__icon stats-item__icon--amber">
             <i class="fas fa-clock"></i>
           </div>
-          <div class="stats-item__value">{{ remaining_duration }}</div>
-          <div class="stats-item__label">Mins Left</div>
+          <div class="stats-item__value">{{ remaining_duration|format_duration }}</div>
+          <div class="stats-item__label">Time Left</div>
         </div>
 
         <div class="stats-item">
           <div class="stats-item__icon stats-item__icon--blue">
             <i class="fas fa-clock"></i>
           </div>
-          <div class="stats-item__value">{{ total_duration }}</div>
-          <div class="stats-item__label">Total Mins</div>
+          <div class="stats-item__value">{{ total_duration|format_duration }}</div>
+          <div class="stats-item__label">Total Time</div>
         </div>
 
       </div>

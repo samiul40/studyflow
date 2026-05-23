@@ -17,3 +17,19 @@ def format_duration(minutes):
     if hours:
         return f"{hours}h"
     return f"{mins}m"
+
+
+@register.filter
+def hours_from_minutes(minutes):
+    """Whole-hours component of a minutes value. Returns 0 for falsy input."""
+    if not minutes:
+        return 0
+    return int(minutes) // 60
+
+
+@register.filter
+def remaining_mins(minutes):
+    """Sub-hour minutes component of a minutes value. Returns 0 for falsy input."""
+    if not minutes:
+        return 0
+    return int(minutes) % 60

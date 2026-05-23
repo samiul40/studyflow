@@ -1,3 +1,4 @@
+{% load learning_filters %}
 <div class="modal fade" id="editUnitModal{{ unit.id }}" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -14,11 +15,39 @@
           <input type="text" name="title" value="{{ unit.title }}" class="form-control mb-3">
 
           {% if resource.resource_type.content_kind != "reading" %}
-          <input type="number" name="duration_minutes" value="{{ unit.duration_minutes|default_if_none:'' }}"
-            class="form-control mb-3" placeholder="Duration (minutes)">
-          <input type="number" name="video_progress_minutes"
-            value="{{ unit.video_progress_minutes|default_if_none:'' }}" class="form-control mb-3"
-            placeholder="Video Progress (minutes)">
+          <div class="mb-3">
+            <label class="form-label">Duration</label>
+            <div class="duration-picker">
+              <div class="input-group">
+                <input type="number" class="form-control dp-hours" min="0" placeholder="h"
+                  value="{{ unit.duration_minutes|hours_from_minutes }}">
+                <span class="input-group-text">h</span>
+                <input type="number" class="form-control dp-mins" min="0" max="59" placeholder="m"
+                  value="{{ unit.duration_minutes|remaining_mins }}">
+                <span class="input-group-text">m</span>
+              </div>
+              <input type="hidden" name="duration_minutes" value="{{ unit.duration_minutes|default_if_none:'' }}">
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label mb-0">Video Progress</label>
+              <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-action="mark-complete">
+                <i class="fas fa-circle-check me-1"></i> Mark as Complete
+              </button>
+            </div>
+            <div class="duration-picker">
+              <div class="input-group">
+                <input type="number" class="form-control dp-hours" min="0" placeholder="h"
+                  value="{{ unit.video_progress_minutes|hours_from_minutes }}">
+                <span class="input-group-text">h</span>
+                <input type="number" class="form-control dp-mins" min="0" max="59" placeholder="m"
+                  value="{{ unit.video_progress_minutes|remaining_mins }}">
+                <span class="input-group-text">m</span>
+              </div>
+              <input type="hidden" name="video_progress_minutes" value="{{ unit.video_progress_minutes|default_if_none:'' }}">
+            </div>
+          </div>
           {% endif %}
 
           <input type="hidden" name="order" value="{{ unit.order }}">
