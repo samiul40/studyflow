@@ -302,6 +302,35 @@ select.form-select {
   cursor: pointer;
 }
 
+// TomSelect — match pill shape of the search input
+.ts-wrapper.single {
+  border-radius: $radius-pill !important;
+
+  .ts-control {
+    border-radius: $radius-pill !important;
+    border-color: $grey-200;
+    font-size: 0.875rem;
+    color: $grey-800;
+    padding: 0.5rem 2.5rem 0.5rem 0.875rem;
+    background-color: #fff;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  &.input-active .ts-control,
+  &.focus .ts-control {
+    border-color: $emerald-400;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+  }
+}
+
+.ts-wrapper .ts-dropdown {
+  border-color: $grey-200;
+  border-radius: $radius-lg;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  font-size: 0.875rem;
+}
+
 // ---------------------------------------------------------------------------
 // Detail card (resource header)
 // ---------------------------------------------------------------------------
