@@ -82,10 +82,8 @@ def get_dashboard_stats(user=None, resource_type=None) -> DashboardStats:
     )[:5]
 
     if user is not None:
-        types_for_user = (
-            ResourceType.objects.filter(resources__user=user).annotate(
-                count=Count("resources")
-            )
+        types_for_user = ResourceType.objects.filter(resources__user=user).annotate(
+            count=Count("resources")
         )
         resource_types_with_counts = [
             {"type": rt, "count": rt.count} for rt in types_for_user

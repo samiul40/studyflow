@@ -89,34 +89,32 @@
 
 {% block scripts %}
 <script>
-  // Map of resource type PK -> metadata, built from the form queryset server-side.
   const resourceTypeData = {
     {% for rt in form.resource_type.field.queryset %}"{{ rt.pk }}": { "unit_label": "{{ rt.unit_label }}", "content_kind": "{{ rt.content_kind }}" },
     {% endfor %}
   };
 
-  const typeSelect = document.getElementById("id_resource_type");
   const newTypeFields = document.getElementById("new-type-fields");
   const unitCountWrapper = document.getElementById("unit-count-wrapper");
-  const unitCountLabel = unitCountWrapper
-    ? unitCountWrapper.querySelector("label")
-    : null;
+  const unitCountLabel = unitCountWrapper ? unitCountWrapper.querySelector("label") : null;
 
-  function onTypeChange() {
-    const pk = typeSelect.value;
-    const isAddNew = pk === "";
+  function onTypeChange(pk) {
+    const isAddNew = !pk;
 
     if (newTypeFields) newTypeFields.style.display = isAddNew ? "block" : "none";
 
     if (unitCountLabel && pk && resourceTypeData[pk]) {
-      const label = resourceTypeData[pk].unit_label;
-      unitCountLabel.textContent = `Number of ${label}s`;
+      unitCountLabel.textContent = `Number of ${resourceTypeData[pk].unit_label}s`;
     } else if (unitCountLabel) {
       unitCountLabel.textContent = "Number of units";
     }
   }
 
-  typeSelect.addEventListener("change", onTypeChange);
-  onTypeChange();
+  const ts = new TomSelect("#id_resource_type", {
+    allowEmptyOption: true,
+    onChange: onTypeChange,
+  });
+
+  onTypeChange(ts.getValue());
 </script>
 {% endblock %}
