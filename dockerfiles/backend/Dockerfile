@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.13-alpine
 
 RUN apk add --no-cache nodejs npm
 
@@ -21,7 +21,7 @@ RUN npm install \
        POSTGRES_HOST=placeholder \
        python manage.py collectstatic --noinput
 
-COPY entrypoint.sh /entrypoint.sh
+COPY web/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 8000
