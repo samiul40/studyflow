@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from learning.services.dashboard import get_dashboard_stats
 
-from .models import LearningResource, LearningUnit
+from .models import LearningResource, LearningUnit, ResourceType
 
 
 class LearningUnitInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -19,20 +19,34 @@ class LearningUnitInline(SortableInlineAdminMixin, admin.TabularInline):
     ordering = ("order",)
 
 
+@admin.register(ResourceType)
+class ResourceTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "content_kind", "is_system")
+    list_filter = ("content_kind", "is_system")
+    search_fields = ("name", "slug")
+    readonly_fields = ("slug", "created_at")
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.is_system:
+            return (
+                "name",
+                "slug",
+                "content_kind",
+                "is_system",
+                "created_at",
+            )
+        return self.readonly_fields
+
+
 @admin.register(LearningResource)
 class LearningResourceAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ("title", "resource_type", "user", "progress", "created_at")
-    list_filter = (
-        "resource_type",
-        "created_at",
-    )
+    list_filter = ("resource_type", "created_at")
     search_fields = ("title", "description", "user__username")
     readonly_fields = ("created_at", "updated_at")
     ordering = ("-created_at",)
     inlines = [LearningUnitInline]
-
     date_hierarchy = "created_at"
-
     autocomplete_fields = ("user",)
 
     fieldsets = (
@@ -57,8 +71,7 @@ class LearningResourceAdmin(SortableAdminBase, admin.ModelAdmin):
         if total == 0:
             return "0%"
         completed = obj.units.filter(status="completed").count()
-        percentage = int((completed / total) * 100)
-        return f"{completed}/{total} ({percentage}%)"
+        return f"{completed}/{total} ({int(completed / total * 100)}%)"
 
 
 @admin.register(LearningUnit)
@@ -71,27 +84,25 @@ class LearningUnitAdmin(admin.ModelAdmin):
         "duration_minutes",
         "video_progress_minutes",
     )
-    list_filter = (
-        "status",
-        "resource__resource_type",
-    )
+    list_filter = ("status", "resource__resource_type")
     search_fields = ("title", "resource__title", "notes")
     readonly_fields = ("created_at", "updated_at")
     ordering = ("resource", "order")
-
     autocomplete_fields = ("resource",)
 
     fieldsets = (
         (
             None,
-            {
-                "fields": ("resource", "title", "order", "status"),
-            },
+            {"fields": ("resource", "title", "order", "status")},
         ),
         (
             "Progress",
             {
-                "fields": ("duration_minutes", "video_progress_minutes", "notes"),
+                "fields": (
+                    "duration_minutes",
+                    "video_progress_minutes",
+                    "notes",
+                )
             },
         ),
         (
@@ -109,12 +120,9 @@ original_index = admin.site.index
 
 def custom_admin_index(request, extra_context=None):
     stats = get_dashboard_stats()
-
     if extra_context is None:
         extra_context = {}
-
     extra_context.update(stats)
-
     return original_index(request, extra_context=extra_context)
 
 

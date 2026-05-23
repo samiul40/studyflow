@@ -8,51 +8,15 @@ function handleSubmit(button) {
   button.form.submit();
 }
 
-// Resource Form Logic
-function initResourceForm() {
-  const typeField = document.getElementById("id_resource_type");
-  const unitField = document.getElementById("id_unit_count");
-  const wrapper = document.getElementById("unit-count-wrapper");
-
-  if (!typeField || !unitField) return;
-
-  const labelMap = {
-    book: "Number of chapters",
-    udemy: "Number of sections",
-    youtube: "Number of videos",
-  };
-
-  function updateUI() {
-    const selected = typeField.value;
-    const validTypes = ["book", "udemy", "youtube"];
-
-    if (!validTypes.includes(selected)) {
-      unitField.value = "";
-    }
-
-    if (wrapper) {
-      wrapper.style.display = validTypes.includes(selected) ? "block" : "none";
-    }
-
-    const label = document.querySelector(`label[for="${unitField.id}"]`);
-    if (label) {
-      label.textContent = labelMap[selected] || "Number of units";
-    }
-  }
-
-  updateUI();
-  typeField.addEventListener("change", updateUI);
-}
-
 // Bulk Unit Modal Logic
-function addRow(title = "", duration = "", resourceType = "") {
+function addRow(title = "", duration = "", contentKind = "") {
   const table = document.querySelector("#units-table tbody");
   if (!table) return;
 
   const row = document.createElement("tr");
 
   const durationCell =
-    resourceType !== "book"
+    contentKind !== "reading"
       ? `
         <td>
           <input type="number" name="duration[]" class="form-control" value="${duration}">
@@ -83,7 +47,7 @@ function initBulkModal() {
   const modal = document.getElementById("bulkUnitModal");
   if (!modal) return;
 
-  const resourceType = modal.dataset.resourceType;
+  const contentKind = modal.dataset.contentKind;
 
   modal.addEventListener("shown.bs.modal", function () {
     const tbody = document.querySelector("#units-table tbody");
@@ -92,7 +56,7 @@ function initBulkModal() {
     tbody.innerHTML = "";
 
     for (let i = 0; i < 5; i++) {
-      addRow("", "", resourceType);
+      addRow("", "", contentKind);
     }
   });
 }
@@ -116,7 +80,6 @@ function togglePassword() {
 
 // Init All
 document.addEventListener("DOMContentLoaded", function () {
-  initResourceForm();
   initBulkModal();
   togglePassword();
 });

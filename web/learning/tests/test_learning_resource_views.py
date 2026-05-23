@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from model_bakery import baker
 
-from learning.models import LearningResource
+from learning.models import LearningResource, ResourceType
 
 pytestmark = pytest.mark.django_db
 
@@ -19,6 +19,19 @@ def test_resource_list_shows_user_resources(client_logged_in, user):
     assert len(response.context["resources"]) == 1
 
 
+def test_resource_list_filter_by_type(client_logged_in, user):
+    rt_book = ResourceType.objects.get(slug="book")
+    rt_other = ResourceType.objects.get(slug="other")
+    baker.make(LearningResource, user=user, resource_type=rt_book)
+    baker.make(LearningResource, user=user, resource_type=rt_other)
+
+    url = reverse("learning:resource_list") + "?type=book"
+    response = client_logged_in.get(url)
+
+    assert response.status_code == 200
+    assert len(response.context["resources"]) == 1
+
+
 def test_resource_detail_view(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
 
@@ -30,11 +43,12 @@ def test_resource_detail_view(client_logged_in, user):
 
 
 def test_resource_create(client_logged_in, user):
+    rt = ResourceType.objects.get(slug="udemy")
     url = reverse("learning:resource_create")
 
     data = {
         "title": "New Learning Resource",
-        "resource_type": "udemy",
+        "resource_type": rt.pk,
         "description": "A great course",
     }
 
@@ -46,23 +60,37 @@ def test_resource_create(client_logged_in, user):
     ).exists()
 
 
-def test_resource_update(client_logged_in, user):
-    resource = baker.make(
-        LearningResource,
-        user=user,
-        title="Old Title",
-        resource_type="book",
-    )
-
-    url = reverse("learning:resource_update", args=[resource.pk])
+def test_resource_create_with_new_type(client_logged_in, user):
+    url = reverse("learning:resource_create")
 
     data = {
-        "title": "Updated Title",
-        "resource_type": "book",
+        "title": "Podcast Resource",
+        "new_resource_type": "Podcast",
+        "new_content_kind": "video",
         "description": "",
     }
 
     response = client_logged_in.post(url, data)
+
+    assert response.status_code == 302
+    assert LearningResource.objects.filter(title="Podcast Resource", user=user).exists()
+    assert ResourceType.objects.filter(slug="podcast").exists()
+
+
+def test_resource_update(client_logged_in, user):
+    rt = ResourceType.objects.get(slug="book")
+    resource = baker.make(
+        LearningResource,
+        user=user,
+        title="Old Title",
+        resource_type=rt,
+    )
+
+    url = reverse("learning:resource_update", args=[resource.pk])
+    response = client_logged_in.post(
+        url,
+        {"title": "Updated Title", "resource_type": rt.pk, "description": ""},
+    )
 
     resource.refresh_from_db()
 
@@ -74,7 +102,6 @@ def test_resource_delete(client_logged_in, user):
     resource = baker.make(LearningResource, user=user)
 
     url = reverse("learning:resource_delete", args=[resource.pk])
-
     response = client_logged_in.post(url)
 
     assert response.status_code == 302
@@ -85,17 +112,17 @@ def test_user_cannot_access_other_users_resource(client_logged_in):
     other_resource = baker.make(LearningResource)
 
     url = reverse("learning:resource_detail", args=[other_resource.pk])
-
     response = client_logged_in.get(url)
 
     assert response.status_code == 404
 
 
 def test_user_cannot_update_other_users_resource(client_logged_in):
+    rt = ResourceType.objects.get(slug="book")
     other_resource = baker.make(LearningResource)
 
     url = reverse("learning:resource_update", args=[other_resource.pk])
-    response = client_logged_in.post(url, {"title": "Hacked", "resource_type": "book"})
+    response = client_logged_in.post(url, {"title": "Hacked", "resource_type": rt.pk})
 
     assert response.status_code == 404
 

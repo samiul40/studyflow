@@ -23,12 +23,22 @@
   {% endif %}
 </div>
 
-<!-- Search -->
+<!-- Search & type filter -->
 <form method="get" class="mb-4" id="searchForm">
-  <div class="resource-search">
-    <i class="fas fa-search resource-search__icon"></i>
-    <input type="text" name="search" id="searchInput" class="resource-search__input" placeholder="Search resources..."
-      value="{{ search_query }}">
+  <div class="d-flex gap-2 flex-wrap">
+    <div class="resource-search flex-grow-1">
+      <i class="fas fa-search resource-search__icon"></i>
+      <input type="text" name="search" id="searchInput" class="resource-search__input"
+        placeholder="Search resources..." value="{{ search_query }}">
+    </div>
+    <select name="type" id="typeFilter" class="form-select w-auto" onchange="this.form.submit()">
+      <option value="">All types</option>
+      {% for rt in resource_types %}
+      <option value="{{ rt.slug }}" {% if selected_type == rt.slug %}selected{% endif %}>
+        {{ rt.name }}
+      </option>
+      {% endfor %}
+    </select>
   </div>
 </form>
 
@@ -41,8 +51,8 @@
 
       <div class="resource-card__header">
         <div class="resource-card__badges">
-          <span class="resource-badge resource-badge--{{ resource.resource_type }}">
-            {{ resource.get_resource_type_display }}
+          <span class="resource-badge resource-badge--{{ resource.resource_type.slug }}">
+            {{ resource.resource_type.name }}
           </span>
           <span class="status-badge
             {% if resource.percentage == 0 %}status-badge--not-started
@@ -75,7 +85,7 @@
         </div>
         <div class="progress">
           <div class="progress-bar" role="progressbar" style="width: {{ resource.percentage }}%;"
-            aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+            aria-valuenow="{{ resource.percentage }}" aria-valuemin="0" aria-valuemax="100">
           </div>
         </div>
       </div>
@@ -97,16 +107,16 @@
 <div class="empty-state">
   <span class="empty-state__icon">📚</span>
   <div class="empty-state__title">
-    {% if search_query %}No results for "{{ search_query }}"{% else %}No resources yet{% endif %}
+    {% if search_query or selected_type %}No results found{% else %}No resources yet{% endif %}
   </div>
   <p class="empty-state__text">
-    {% if search_query %}
-    Try a different search term or clear your search.
+    {% if search_query or selected_type %}
+    Try a different search term or filter.
     {% else %}
     Start tracking your learning by adding your first resource.
     {% endif %}
   </p>
-  {% if not search_query %}
+  {% if not search_query and not selected_type %}
   <a href="{% url 'learning:resource_create' %}" class="btn btn-primary">
     <i class="fas fa-plus me-1"></i> Add Your First Resource
   </a>
