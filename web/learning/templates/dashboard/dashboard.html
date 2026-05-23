@@ -113,8 +113,8 @@
 
     <div class="col-md-8 d-flex">
       <div class="chart-card w-100">
-        <div class="chart-card__title">Resource Progress</div>
-        <canvas id="resourceChart"></canvas>
+        <div class="chart-card__title">Completion Activity (last 8 weeks)</div>
+        <canvas id="activityChart"></canvas>
       </div>
     </div>
   </div>
@@ -224,36 +224,39 @@
     });
   }
 
-  const resourceCtx = document.getElementById('resourceChart');
-  if (resourceCtx) {
-    new Chart(resourceCtx, {
-      type: 'bar',
+  const activityCtx = document.getElementById('activityChart');
+  if (activityCtx) {
+    new Chart(activityCtx, {
+      type: 'line',
       data: {
-        labels: [{% for r in resource_progress %}"{{ r.title|escapejs }}",{% endfor %}],
-  datasets: [{
-    label: 'Completion %',
-    data: [{% for r in resource_progress %}{{ r.percent }}, {% endfor %}],
-    backgroundColor: '#10b981',
-      borderRadius: 6,
-        borderSkipped: false,
+        labels: [{% for w in weekly_completions %}"{{ w.label }}",{% endfor %}],
+        datasets: [{
+          label: 'Units Completed',
+          data: [{% for w in weekly_completions %}{{ w.count }},{% endfor %}],
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#10b981',
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true,
         }]
       },
-  options: {
-    responsive: true,
-      scales: {
-      y: {
-        beginAtZero: true,
-          max: 100,
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
             grid: { color: '#f3f4f6' },
-        ticks: { font: { size: 11 }, callback: v => v + '%' }
-      },
-      x: {
-        grid: { display: false },
-        ticks: { font: { size: 11 } }
+            ticks: { font: { size: 11 }, precision: 0, stepSize: 1 }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 } }
+          }
+        },
+        plugins: { legend: { display: false } }
       }
-    },
-    plugins: { legend: { display: false } }
-  }
     });
   }
 </script>
