@@ -15,6 +15,13 @@
 <div class="row g-4">
   <div class="col-lg-12">
 
+    {% if resource.is_archived %}
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-3">
+      <i class="fas fa-box-archive"></i>
+      <span>This resource is archived and excluded from your dashboard stats.</span>
+    </div>
+    {% endif %}
+
     <!-- Resource info card -->
     <div class="detail-card mb-4">
 
@@ -51,6 +58,18 @@
           <a href="{% url 'learning:resource_update' resource.pk %}" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-pen me-1"></i> Edit
           </a>
+          <form method="post" action="{% url 'learning:resource_archive' resource.pk %}" class="d-inline">
+            {% csrf_token %}
+            {% if resource.is_archived %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm">
+              <i class="fas fa-box-open me-1"></i> Unarchive
+            </button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm">
+              <i class="fas fa-box-archive me-1"></i> Archive
+            </button>
+            {% endif %}
+          </form>
           {% endif %}
           {% if perms.learning.delete_learningresource %}
           <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">

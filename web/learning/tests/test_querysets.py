@@ -76,3 +76,39 @@ class TestLearningResourceWithProgress:
         assert result.total_units == 3
         assert result.completed_units == 0
         assert result.percentage == 0
+
+
+class TestLearningResourceActive:
+    """Tests for the .active() queryset method."""
+
+    def test_active_returns_non_archived_resources(self, user):
+        resource = baker.make(LearningResource, user=user, is_archived=False)
+
+        results = LearningResource.objects.active()
+
+        assert resource in results
+
+    def test_active_excludes_archived_resources(self, user):
+        archived = baker.make(LearningResource, user=user, is_archived=True)
+
+        results = LearningResource.objects.active()
+
+        assert archived not in results
+
+
+class TestLearningResourceArchived:
+    """Tests for the .archived() queryset method."""
+
+    def test_archived_returns_archived_resources(self, user):
+        archived = baker.make(LearningResource, user=user, is_archived=True)
+
+        results = LearningResource.objects.archived()
+
+        assert archived in results
+
+    def test_archived_excludes_non_archived_resources(self, user):
+        resource = baker.make(LearningResource, user=user, is_archived=False)
+
+        results = LearningResource.objects.archived()
+
+        assert resource not in results

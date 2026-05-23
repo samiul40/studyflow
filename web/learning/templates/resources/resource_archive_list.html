@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'learning:dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'learning:resource_list' %}">Resources</a></li>
+    <li class="breadcrumb-item active">Archived</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h2>Archived Resources</h2>
+  <a href="{% url 'learning:resource_list' %}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Resources
+  </a>
+</div>
+
+{% if resources %}
+<div class="row g-3">
+  {% for resource in resources %}
+
+  <div class="col-md-4">
+    <div class="resource-card resource-card--archived">
+
+      <div class="resource-card__header">
+        <div class="resource-card__badges">
+          <span class="resource-badge resource-badge--{{ resource.resource_type.slug }}">
+            {{ resource.resource_type.name }}
+          </span>
+          <span class="status-badge status-badge--archived">Archived</span>
+        </div>
+        <span class="resource-card__date">{{ resource.created_at|date:"d M Y" }}</span>
+      </div>
+
+      <h5 class="resource-card__title">{{ resource.title }}</h5>
+
+      {% if resource.description %}
+      <p class="resource-card__desc">{{ resource.description|truncatewords:20 }}</p>
+      {% endif %}
+
+      <div class="resource-card__progress">
+        <div class="resource-card__progress-header">
+          <span class="resource-card__progress-label">Progress</span>
+          <span class="resource-card__progress-value">{{ resource.completed_units }}/{{ resource.total_units }} &middot; {{ resource.percentage }}%</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ resource.percentage }}%;"
+            aria-valuenow="{{ resource.percentage }}" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+      </div>
+
+      {% if perms.learning.view_learningresource %}
+      <a href="{{ resource.get_absolute_url }}" class="resource-card__cta">
+        View Details <i class="fas fa-arrow-right ms-1"></i>
+      </a>
+      {% endif %}
+
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+
+{% else %}
+
+<div class="empty-state">
+  <span class="empty-state__icon">📦</span>
+  <div class="empty-state__title">No archived resources</div>
+  <p class="empty-state__text">Resources you archive will appear here.</p>
+  <a href="{% url 'learning:resource_list' %}" class="btn btn-primary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Resources
+  </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

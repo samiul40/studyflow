@@ -151,3 +151,104 @@ def test_resource_views_require_login(client, url):
 
     assert response.status_code == 302
     assert "/login/" in response.url
+
+
+def test_resource_list_excludes_archived(client_logged_in, user):
+    active = baker.make(LearningResource, user=user, is_archived=False)
+    baker.make(LearningResource, user=user, is_archived=True)
+
+    url = reverse("learning:resource_list")
+    response = client_logged_in.get(url)
+
+    assert response.status_code == 200
+
+    resources = list(response.context["resources"])
+
+    assert active in resources
+    assert len(resources) == 1
+
+
+def test_resource_archive_sets_is_archived(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user, is_archived=False)
+
+    url = reverse("learning:resource_archive", args=[resource.pk])
+    client_logged_in.post(url)
+
+    resource.refresh_from_db()
+    assert resource.is_archived is True
+
+
+def test_resource_archive_redirects_to_list(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user, is_archived=False)
+
+    url = reverse("learning:resource_archive", args=[resource.pk])
+    response = client_logged_in.post(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse("learning:resource_list")
+
+
+def test_resource_unarchive_clears_is_archived(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user, is_archived=True)
+
+    url = reverse("learning:resource_archive", args=[resource.pk])
+    client_logged_in.post(url)
+
+    resource.refresh_from_db()
+    assert resource.is_archived is False
+
+
+def test_resource_unarchive_redirects_to_detail(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user, is_archived=True)
+
+    url = reverse("learning:resource_archive", args=[resource.pk])
+    response = client_logged_in.post(url)
+
+    assert response.status_code == 302
+    assert response.url == resource.get_absolute_url()
+
+
+def test_resource_archive_list_shows_archived(client_logged_in, user):
+    archived = baker.make(LearningResource, user=user, is_archived=True)
+
+    url = reverse("learning:resource_archive_list")
+    response = client_logged_in.get(url)
+
+    assert response.status_code == 200
+    assert archived in response.context["resources"]
+
+
+def test_resource_archive_list_excludes_active(client_logged_in, user):
+    active = baker.make(LearningResource, user=user, is_archived=False)
+
+    url = reverse("learning:resource_archive_list")
+    response = client_logged_in.get(url)
+
+    assert response.status_code == 200
+    assert active not in response.context["resources"]
+
+
+def test_archived_resource_detail_is_accessible(client_logged_in, user):
+    resource = baker.make(LearningResource, user=user, is_archived=True)
+
+    url = reverse("learning:resource_detail", args=[resource.pk])
+    response = client_logged_in.get(url)
+
+    assert response.status_code == 200
+
+
+def test_user_cannot_archive_other_users_resource(client_logged_in):
+    other_resource = baker.make(LearningResource)
+
+    url = reverse("learning:resource_archive", args=[other_resource.pk])
+    response = client_logged_in.post(url)
+
+    assert response.status_code == 404
+
+
+def test_resource_archive_requires_login(client):
+    url = reverse("learning:resource_archive", args=[999])
+    response = client.post(url)
+
+    assert response.status_code == 302
+    assert "/login/" in response.url
