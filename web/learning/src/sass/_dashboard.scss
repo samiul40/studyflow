@@ -122,13 +122,6 @@
   padding: 1.375rem 1.5rem;
   height: 100%;
 
-  .chart-card__title {
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: $grey-800;
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.01em;
-  }
 }
 
 .chart-card--donut {
@@ -279,6 +272,53 @@
     max-width: 320px;
     margin-left: auto;
     margin-right: auto;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Weekly summary stats
+// ---------------------------------------------------------------------------
+.week-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.week-stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+
+    &--emerald { background-color: $emerald-50;  color: $emerald-600; }
+    &--blue    { background-color: #eff6ff;      color: #2563eb; }
+    &--violet  { background-color: #f5f3ff;      color: #7c3aed; }
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $grey-900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+
+  &__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $grey-400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 }
 
