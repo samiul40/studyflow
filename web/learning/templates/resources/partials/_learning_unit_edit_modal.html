@@ -13,7 +13,7 @@
         <div class="modal-body">
           <input type="text" name="title" value="{{ unit.title }}" class="form-control mb-3">
 
-          {% if resource.resource_type != "book" %}
+          {% if resource.resource_type.content_kind != "reading" %}
           <input type="number" name="duration_minutes" value="{{ unit.duration_minutes|default_if_none:'' }}"
             class="form-control mb-3" placeholder="Duration (minutes)">
           <input type="number" name="video_progress_minutes"

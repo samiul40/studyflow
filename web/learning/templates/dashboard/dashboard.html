@@ -20,29 +20,13 @@
     <span class="pill-count">{{ total_resources }}</span>
   </a>
 
-  <a href="{% url 'learning:dashboard' %}?type=udemy"
-    class="filter-pill {% if active_filter == 'udemy' %}active{% endif %} {% if type_counts.udemy == 0 %}disabled{% endif %}">
-    <i class="fas fa-play-circle"></i> Courses
-    <span class="pill-count">{{ type_counts.udemy }}</span>
+  {% for item in resource_types_with_counts %}
+  <a href="{% url 'learning:dashboard' %}?type={{ item.type.slug }}"
+    class="filter-pill {% if active_filter == item.type.slug %}active{% endif %} {% if item.count == 0 %}disabled{% endif %}">
+    <i class="fas fa-layer-group"></i> {{ item.type.name }}
+    <span class="pill-count">{{ item.count }}</span>
   </a>
-
-  <a href="{% url 'learning:dashboard' %}?type=youtube"
-    class="filter-pill {% if active_filter == 'youtube' %}active{% endif %} {% if type_counts.youtube == 0 %}disabled{% endif %}">
-    <i class="fab fa-youtube"></i> YouTube
-    <span class="pill-count">{{ type_counts.youtube }}</span>
-  </a>
-
-  <a href="{% url 'learning:dashboard' %}?type=book"
-    class="filter-pill {% if active_filter == 'book' %}active{% endif %} {% if type_counts.book == 0 %}disabled{% endif %}">
-    <i class="fas fa-book"></i> Books
-    <span class="pill-count">{{ type_counts.book }}</span>
-  </a>
-
-  <a href="{% url 'learning:dashboard' %}?type=other"
-    class="filter-pill {% if active_filter == 'other' %}active{% endif %} {% if type_counts.other == 0 %}disabled{% endif %}">
-    <i class="fas fa-layer-group"></i> Other
-    <span class="pill-count">{{ type_counts.other }}</span>
-  </a>
+  {% endfor %}
 
 </div>
 
@@ -194,8 +178,8 @@
         <div>
           <div class="recent-item__title">{{ r.title }}</div>
           <div class="recent-item__meta">
-            <span class="resource-badge resource-badge--{{ r.resource_type }}">
-              {{ r.get_resource_type_display }}
+            <span class="resource-badge resource-badge--{{ r.resource_type.slug }}">
+              {{ r.resource_type.name }}
             </span>
           </div>
         </div>

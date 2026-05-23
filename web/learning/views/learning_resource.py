@@ -10,7 +10,7 @@ from django.views.generic import (
 
 from learning.forms import LearningResourceForm
 from learning.mixins import UserPermissionMixin
-from learning.models import LearningResource, LearningUnit
+from learning.models import LearningResource, LearningUnit, ResourceType
 from learning.services import get_resource_progress
 
 
@@ -38,18 +38,29 @@ class ResourceListView(BaseUserResourceView, ListView):
     context_object_name = "resources"
 
     def get_queryset(self):
-        qs = super().get_queryset().with_progress().select_related("user")
+        qs = (
+            super()
+            .get_queryset()
+            .with_progress()
+            .select_related("user", "resource_type")
+        )
 
         search_query = self.request.GET.get("search", "").strip()
+        type_slug = self.request.GET.get("type", "").strip()
 
         if search_query:
             qs = qs.filter(title__icontains=search_query)
+
+        if type_slug:
+            qs = qs.filter(resource_type__slug=type_slug)
 
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
+        context["selected_type"] = self.request.GET.get("type", "")
+        context["resource_types"] = ResourceType.objects.all()
         return context
 
 
@@ -67,8 +78,7 @@ class ResourceDetailView(BaseUserResourceView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        progress = get_resource_progress(self.object)
-        context.update(progress)
+        context.update(get_resource_progress(self.object))
         return context
 
 
@@ -87,20 +97,11 @@ class ResourceCreateView(UserPermissionMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-
         response = super().form_valid(form)
 
         unit_count = form.cleaned_data.get("unit_count")
-
         if unit_count:
-            name_map = {
-                "book": "Chapter",
-                "udemy": "Section",
-                "youtube": "Video",
-            }
-
-            unit_label = name_map.get(self.object.resource_type, "Unit")
-
+            unit_label = self.object.resource_type.unit_label
             units = [
                 LearningUnit(
                     resource=self.object,
@@ -109,7 +110,6 @@ class ResourceCreateView(UserPermissionMixin, CreateView):
                 )
                 for i in range(unit_count)
             ]
-
             LearningUnit.objects.bulk_create(units)
 
         messages.success(self.request, "Resource created successfully.")

@@ -49,7 +49,13 @@
         {% include "partials/_form_field.html" with field=form.title %}
         {% include "partials/_form_field.html" with field=form.resource_type %}
 
-        {% if not form.instance.pk%}
+        <!-- New type fields — shown only when "Add new type" is selected -->
+        <div id="new-type-fields" style="display:none;">
+          {% include "partials/_form_field.html" with field=form.new_resource_type %}
+          {% include "partials/_form_field.html" with field=form.new_content_kind %}
+        </div>
+
+        {% if not form.instance.pk %}
         <div id="unit-count-wrapper">
           {% include "partials/_form_field.html" with field=form.unit_count %}
         </div>
@@ -79,4 +85,38 @@
 
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Map of resource type PK -> metadata, built from the form queryset server-side.
+  const resourceTypeData = {
+    {% for rt in form.resource_type.field.queryset %}"{{ rt.pk }}": { "unit_label": "{{ rt.unit_label }}", "content_kind": "{{ rt.content_kind }}" },
+    {% endfor %}
+  };
+
+  const typeSelect = document.getElementById("id_resource_type");
+  const newTypeFields = document.getElementById("new-type-fields");
+  const unitCountWrapper = document.getElementById("unit-count-wrapper");
+  const unitCountLabel = unitCountWrapper
+    ? unitCountWrapper.querySelector("label")
+    : null;
+
+  function onTypeChange() {
+    const pk = typeSelect.value;
+    const isAddNew = pk === "";
+
+    if (newTypeFields) newTypeFields.style.display = isAddNew ? "block" : "none";
+
+    if (unitCountLabel && pk && resourceTypeData[pk]) {
+      const label = resourceTypeData[pk].unit_label;
+      unitCountLabel.textContent = `Number of ${label}s`;
+    } else if (unitCountLabel) {
+      unitCountLabel.textContent = "Number of units";
+    }
+  }
+
+  typeSelect.addEventListener("change", onTypeChange);
+  onTypeChange();
+</script>
 {% endblock %}
