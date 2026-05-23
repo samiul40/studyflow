@@ -1,8 +1,8 @@
 import datetime
 from typing import List, Optional, TypedDict
 
-from django.db.models import Count, Q
-from django.db.models.functions import TruncWeek
+from django.db.models import Count, Q, Sum
+from django.db.models.functions import TruncDate, TruncWeek
 from django.utils import timezone
 
 from learning.models import LearningResource, LearningUnit, ResourceType
@@ -14,6 +14,13 @@ class ResourceProgress(TypedDict):
     id: int
     title: str
     percent: int
+
+
+class WeeklySummary(TypedDict):
+    units_completed: int
+    learning_time_minutes: int
+    resources_worked_on: int
+    daily_completions: list  # [{label, count}] Mon–Sun, current week
 
 
 class DashboardStats(TypedDict):
@@ -29,6 +36,7 @@ class DashboardStats(TypedDict):
     active_filter: Optional[str]
     resource_types_with_counts: list
     weekly_completions: list
+    weekly_summary: WeeklySummary
 
 
 def get_dashboard_stats(user=None, resource_type=None) -> DashboardStats:
@@ -62,6 +70,7 @@ def get_dashboard_stats(user=None, resource_type=None) -> DashboardStats:
         "active_filter": resource_type,
         "resource_types_with_counts": _get_resource_types_with_counts(user),
         "weekly_completions": _get_weekly_completions(unit_qs),
+        "weekly_summary": _get_weekly_summary(unit_qs),
     }
 
 
@@ -153,3 +162,52 @@ def _get_weekly_completions(unit_qs) -> list:
         )
 
     return result
+
+
+def _get_weekly_summary(unit_qs) -> WeeklySummary:
+    """
+    Return stats for the current Monday–Sunday week.
+
+    Uses updated_at on completed units as a proxy for completion date.
+    """
+    now = timezone.now()
+    week_start = (now - datetime.timedelta(days=now.weekday())).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    week_end = week_start + datetime.timedelta(weeks=1)
+
+    completed_this_week = unit_qs.filter(
+        status="completed",
+        updated_at__gte=week_start,
+        updated_at__lt=week_end,
+    )
+
+    units_completed = completed_this_week.count()
+    learning_time_minutes = (
+        completed_this_week.aggregate(total=Sum("duration_minutes"))["total"] or 0
+    )
+    resources_worked_on = completed_this_week.values("resource_id").distinct().count()
+
+    # Day-by-day completions for the current week (Mon–Sun)
+    raw_daily = (
+        completed_this_week.annotate(day=TruncDate("updated_at"))
+        .values("day")
+        .annotate(count=Count("id"))
+    )
+    daily_map = {entry["day"]: entry["count"] for entry in raw_daily}
+
+    day_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    daily_completions = [
+        {
+            "label": day_labels[i],
+            "count": daily_map.get((week_start + datetime.timedelta(days=i)).date(), 0),
+        }
+        for i in range(7)
+    ]
+
+    return {
+        "units_completed": units_completed,
+        "learning_time_minutes": learning_time_minutes,
+        "resources_worked_on": resources_worked_on,
+        "daily_completions": daily_completions,
+    }

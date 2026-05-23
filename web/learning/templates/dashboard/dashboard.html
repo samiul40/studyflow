@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load learning_filters %}
 
 {% block content %}
 
@@ -93,32 +94,78 @@
 
 </div>
 
-{% if total_units > 0 %}
+<!-- This Week summary -->
+<div class="row g-3 mb-4">
 
-<!-- Showing label -->
-<p class="section-title">Showing: {{ active_filter|default:"All resources" }}</p>
+  <div class="col-lg-5">
+    <p class="section-title">This Week</p>
+    <div class="card p-4 h-100">
+      <div class="week-stats">
 
-<!-- Charts -->
-<div class="row g-3 mb-4 align-items-stretch">
-
-  <div class="row g-3 mb-4">
-    <div class="col-md-4 d-flex">
-      <div class="chart-card chart-card--donut w-100">
-        <div class="chart-card__title">Completion Breakdown</div>
-        <div class="chart-canvas-wrap">
-          <canvas id="completionChart"></canvas>
+        <div class="week-stat">
+          <div class="week-stat__icon week-stat__icon--violet">
+            <i class="fas fa-folder-open"></i>
+          </div>
+          <div>
+            <div class="week-stat__value">{{ weekly_summary.resources_worked_on }}</div>
+            <div class="week-stat__label">Resources Worked On</div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="col-md-8 d-flex">
-      <div class="chart-card w-100">
-        <div class="chart-card__title">Completion Activity (last 8 weeks)</div>
-        <canvas id="activityChart"></canvas>
+        <div class="week-stat">
+          <div class="week-stat__icon week-stat__icon--emerald">
+            <i class="fas fa-circle-check"></i>
+          </div>
+          <div>
+            <div class="week-stat__value">{{ weekly_summary.units_completed }}</div>
+            <div class="week-stat__label">Units Completed</div>
+          </div>
+        </div>
+
+        <div class="week-stat">
+          <div class="week-stat__icon week-stat__icon--blue">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div>
+            <div class="week-stat__value">
+              {{ weekly_summary.learning_time_minutes|format_duration }}
+            </div>
+            <div class="week-stat__label">Learning Time</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
+  <div class="col-lg-7">
+    <p class="section-title">Daily Activity This Week</p>
+    <div class="chart-card h-100">
+      <canvas id="dailyChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+{% if total_units > 0 %}
+
+<!-- Charts -->
+<div class="row g-3 mb-4 mt-5">
+  <div class="col-md-4 d-flex flex-column">
+    <p class="section-title">Completion Breakdown</p>
+    <div class="chart-card chart-card--donut w-100 flex-grow-1">
+      <div class="chart-canvas-wrap">
+        <canvas id="completionChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8 d-flex flex-column">
+    <p class="section-title">Completion Activity (last 8 weeks)</p>
+    <div class="chart-card w-100 flex-grow-1">
+      <canvas id="activityChart"></canvas>
+    </div>
+  </div>
 </div>
 
 {% endif %}
@@ -221,6 +268,42 @@
       }
     }
   }
+    });
+  }
+
+  const dailyCtx = document.getElementById('dailyChart');
+  if (dailyCtx) {
+    const dailyCounts = [{% for d in weekly_summary.daily_completions %}{{ d.count }},{% endfor %}];
+    const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+    new Chart(dailyCtx, {
+      type: 'bar',
+      data: {
+        labels: [{% for d in weekly_summary.daily_completions %}"{{ d.label }}",{% endfor %}],
+        datasets: [{
+          label: 'Units Completed',
+          data: dailyCounts,
+          backgroundColor: dailyCounts.map((_, i) =>
+            i === todayIndex ? '#10b981' : '#d1fae5'
+          ),
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: '#f3f4f6' },
+            ticks: { font: { size: 11 }, precision: 0, stepSize: 1 }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 12, weight: '600' } }
+          }
+        },
+        plugins: { legend: { display: false } }
+      }
     });
   }
 
