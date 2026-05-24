@@ -31,6 +31,10 @@
           <i class="fas fa-lock"></i>
           Security
         </button>
+        <button class="settings-nav__item" data-panel="appearance">
+          <i class="fas fa-palette"></i>
+          Appearance
+        </button>
       </nav>
     </aside>
   </div>
@@ -113,12 +117,72 @@
       </div>
     </div>
 
+    <!-- Appearance -->
+    <div class="settings-panel" id="panel-appearance">
+      <div class="form-card">
+
+        <div class="settings-form-header">
+          <h3 class="settings-form-title">Appearance</h3>
+          <p class="settings-form-subtitle">Choose how StudyFlow looks to you</p>
+        </div>
+
+        <div class="theme-selector">
+
+          <label class="theme-option" id="theme-opt-light">
+            <input type="radio" name="theme" value="light" class="theme-option__radio">
+            <div class="theme-option__preview theme-option__preview--light">
+              <div class="theme-preview-bar"></div>
+              <div class="theme-preview-lines">
+                <span></span>
+                <span class="short"></span>
+              </div>
+            </div>
+            <div class="theme-option__label">
+              <i class="fas fa-sun"></i> Light
+            </div>
+          </label>
+
+          <label class="theme-option" id="theme-opt-dark">
+            <input type="radio" name="theme" value="dark" class="theme-option__radio">
+            <div class="theme-option__preview theme-option__preview--dark">
+              <div class="theme-preview-bar"></div>
+              <div class="theme-preview-lines">
+                <span></span>
+                <span class="short"></span>
+              </div>
+            </div>
+            <div class="theme-option__label">
+              <i class="fas fa-moon"></i> Dark
+            </div>
+          </label>
+
+          <label class="theme-option" id="theme-opt-system">
+            <input type="radio" name="theme" value="system" class="theme-option__radio">
+            <div class="theme-option__preview theme-option__preview--system">
+              <div class="theme-preview-half theme-preview-half--light">
+                <div class="theme-preview-bar"></div>
+              </div>
+              <div class="theme-preview-half theme-preview-half--dark">
+                <div class="theme-preview-bar"></div>
+              </div>
+            </div>
+            <div class="theme-option__label">
+              <i class="fas fa-display"></i> System
+            </div>
+          </label>
+
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+  // ── Settings nav ────────────────────────────────────────────────────────────
   const navItems = document.querySelectorAll('.settings-nav__item');
   const panels = document.querySelectorAll('.settings-panel');
 
@@ -130,5 +194,45 @@
       document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
     });
   });
+
+  // ── Theme preference ────────────────────────────────────────────────────────
+  const THEME_KEY = 'sf-theme';
+
+  function getSystemTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(preference) {
+    const resolved = preference === 'system' ? getSystemTheme() : preference;
+    document.documentElement.setAttribute('data-theme', resolved);
+    localStorage.setItem(THEME_KEY, preference);
+  }
+
+  function syncThemeOptions() {
+    const saved = localStorage.getItem(THEME_KEY) || 'system';
+    document.querySelectorAll('.theme-option__radio').forEach(r => {
+      r.checked = (r.value === saved);
+      r.closest('.theme-option').classList.toggle('selected', r.value === saved);
+    });
+  }
+
+  document.querySelectorAll('.theme-option__radio').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.checked) {
+        applyTheme(radio.value);
+        document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'));
+        radio.closest('.theme-option').classList.add('selected');
+      }
+    });
+  });
+
+  // Re-apply if OS preference changes while System is selected
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if ((localStorage.getItem(THEME_KEY) || 'system') === 'system') {
+      applyTheme('system');
+    }
+  });
+
+  syncThemeOptions();
 </script>
 {% endblock %}
