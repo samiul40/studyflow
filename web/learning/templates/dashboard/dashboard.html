@@ -244,6 +244,12 @@
 {% endblock %}
 {% block scripts %}
 <script>
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor   = isDark ? '#334155' : '#f3f4f6';
+  const tickColor   = isDark ? '#94a3b8' : '#6b7280';
+  const barInactive = isDark ? 'rgba(52,211,153,0.2)' : '#d1fae5';
+  const remainColor = isDark ? '#334155' : '#e5e7eb';
+
   const completionCtx = document.getElementById('completionChart');
   if (completionCtx) {
     new Chart(completionCtx, {
@@ -252,22 +258,22 @@
         labels: ['Completed', 'Remaining'],
         datasets: [{
           data: [{{ completed_units }}, {{ incomplete_units }}],
-      backgroundColor: ['#10b981', '#e5e7eb'],
-      borderWidth: 0,
-      hoverOffset: 4,
-    }]
+          backgroundColor: ['#10b981', remainColor],
+          borderWidth: 0,
+          hoverOffset: 4,
+        }]
       },
-  options: {
-    responsive: true,
-      maintainAspectRatio: false,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
         cutout: '70%',
-          plugins: {
-      legend: {
-        position: 'bottom',
-          labels: { font: { size: 12, weight: '600' }, padding: 16 }
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { font: { size: 12, weight: '600' }, padding: 16, color: tickColor }
+          }
+        }
       }
-    }
-  }
     });
   }
 
@@ -282,9 +288,7 @@
         datasets: [{
           label: 'Units Completed',
           data: dailyCounts,
-          backgroundColor: dailyCounts.map((_, i) =>
-            i === todayIndex ? '#10b981' : '#d1fae5'
-          ),
+          backgroundColor: dailyCounts.map((_, i) => i === todayIndex ? '#10b981' : barInactive),
           borderRadius: 6,
           borderSkipped: false,
         }]
@@ -294,12 +298,12 @@
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: '#f3f4f6' },
-            ticks: { font: { size: 11 }, precision: 0, stepSize: 1 }
+            grid: { color: gridColor },
+            ticks: { font: { size: 11 }, precision: 0, stepSize: 1, color: tickColor }
           },
           x: {
             grid: { display: false },
-            ticks: { font: { size: 12, weight: '600' } }
+            ticks: { font: { size: 12, weight: '600' }, color: tickColor }
           }
         },
         plugins: { legend: { display: false } }
@@ -317,7 +321,7 @@
           label: 'Units Completed',
           data: [{% for w in weekly_completions %}{{ w.count }},{% endfor %}],
           borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          backgroundColor: 'rgba(16,185,129,0.1)',
           borderWidth: 2,
           pointBackgroundColor: '#10b981',
           pointRadius: 4,
@@ -330,12 +334,12 @@
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: '#f3f4f6' },
-            ticks: { font: { size: 11 }, precision: 0, stepSize: 1 }
+            grid: { color: gridColor },
+            ticks: { font: { size: 11 }, precision: 0, stepSize: 1, color: tickColor }
           },
           x: {
             grid: { display: false },
-            ticks: { font: { size: 11 } }
+            ticks: { font: { size: 11 }, color: tickColor }
           }
         },
         plugins: { legend: { display: false } }

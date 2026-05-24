@@ -1,0 +1,405 @@
+// =============================================================================
+// _themes.scss — Dark mode overrides
+// Applied via [data-theme="dark"] on <html>; set by JS from localStorage.
+// =============================================================================
+@use '../abstracts/variables' as *;
+
+[data-theme="dark"] {
+
+  // ── Body ────────────────────────────────────────────────────────────────────
+  body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+
+  // ── Headings & typography ────────────────────────────────────────────────────
+  h1, h2, h3, h4, h5, h6 { color: #f1f5f9; }
+  .stat-value { color: #f1f5f9; }
+  .text-muted { color: #64748b !important; }
+
+  a { color: $emerald-400; &:hover { color: $emerald-300; } }
+
+  // ── Navbar ──────────────────────────────────────────────────────────────────
+  .navbar {
+    background-color: #1e293b !important;
+    border-bottom-color: #334155;
+
+    .navbar-brand { color: #f1f5f9; &:hover { color: #f1f5f9; } }
+
+    .nav-link {
+      color: #94a3b8;
+      &:hover { color: #f1f5f9; background-color: #253047; }
+      &.active { color: $emerald-400; background-color: rgba(52, 211, 153, 0.12); }
+    }
+
+    .navbar-user-trigger {
+      background: #253047;
+      border-color: #334155;
+      &:hover { background: #334155; border-color: #475569; }
+      span { color: #e2e8f0; }
+    }
+
+    .dropdown-menu {
+      background: #1e293b;
+      border-color: #334155;
+
+      .dropdown-header-info {
+        border-bottom-color: #334155;
+        small { color: #64748b; }
+        strong { color: #e2e8f0; }
+      }
+
+      .dropdown-item {
+        color: #94a3b8;
+        &:hover { background-color: #253047; color: #f1f5f9; }
+        &.text-danger { color: #f87171; }
+        &.text-danger:hover { background-color: rgba(239, 68, 68, 0.12); }
+      }
+
+      .dropdown-divider { border-color: #334155; }
+    }
+
+    .navbar-toggler { border-color: #334155; }
+    .navbar-toggler-icon { filter: invert(0.8); }
+  }
+
+  @media (max-width: 991px) {
+    .navbar-collapse {
+      border-top-color: #334155;
+
+      .nav-link.active { background: rgba(52, 211, 153, 0.12); color: $emerald-400; }
+    }
+  }
+
+  // ── Form controls ────────────────────────────────────────────────────────────
+  .form-label { color: #cbd5e1; }
+
+  .form-control {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+
+    &::placeholder { color: #475569; }
+
+    &:focus {
+      border-color: $emerald-400;
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.15);
+      background-color: #0f172a;
+      color: #e2e8f0;
+    }
+  }
+
+  .input-group-text {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+  }
+
+  .form-select {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+
+  // TomSelect
+  .ts-wrapper .ts-control {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+  }
+
+  .ts-wrapper .ts-dropdown {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+
+    .option { color: #e2e8f0; }
+    .option:hover, .option.active { background: #253047; }
+  }
+
+  // ── Bootstrap .card (used on dashboard "This Week" + "Course Progress") ──────
+  .card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+
+  // ── Cards & surfaces ─────────────────────────────────────────────────────────
+  .form-card {
+    background: #1e293b;
+    border-color: #334155;
+
+    &__header { border-bottom-color: #334155; }
+    &__title { color: #f1f5f9; }
+    &__subtitle { color: #64748b; }
+    &__actions { border-top-color: #334155; }
+    &__icon { background: rgba(52, 211, 153, 0.12); }
+  }
+
+  .login-card { background: #1e293b; border-color: #334155; }
+  .login-brand { color: #f1f5f9; }
+  .login-toggle-pass {
+    background: #0f172a;
+    border-color: #334155;
+    color: #64748b;
+    &:hover { color: #cbd5e1; }
+  }
+
+  // ── Settings sidebar ─────────────────────────────────────────────────────────
+  .settings-sidebar { background: #1e293b; border-color: #334155; }
+  .settings-sidebar__header { border-bottom-color: #334155; }
+  .settings-sidebar__title { color: #475569; }
+
+  .settings-nav__item {
+    color: #94a3b8;
+
+    i { color: #475569; }
+
+    &:hover {
+      background: #253047;
+      color: #f1f5f9;
+      i { color: #94a3b8; }
+    }
+
+    &.active {
+      background: rgba(52, 211, 153, 0.12);
+      color: $emerald-400;
+      i { color: $emerald-400; }
+    }
+  }
+
+  .settings-form-header { border-bottom-color: #334155; }
+  .settings-form-title { color: #f1f5f9; }
+  .settings-form-subtitle { color: #64748b; }
+
+  // ── Buttons ──────────────────────────────────────────────────────────────────
+  .btn-cancel {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+    &:hover { background: #253047; border-color: #475569; color: #e2e8f0; }
+  }
+
+  // ── Breadcrumbs ──────────────────────────────────────────────────────────────
+  .breadcrumb-item {
+    color: #475569;
+    a { color: #64748b; &:hover { color: $emerald-400; } }
+    &.active { color: #94a3b8; }
+    & + .breadcrumb-item::before { color: #334155; }
+  }
+
+  // ── Alerts ────────────────────────────────────────────────────────────────────
+  .alert-danger {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+  }
+
+  .alert-success {
+    background: rgba(52, 211, 153, 0.12);
+    border-color: rgba(52, 211, 153, 0.25);
+    color: $emerald-300;
+  }
+
+  // ── Layout helpers ────────────────────────────────────────────────────────────
+  .input-group .input-group-text { background: #1e293b; border-color: #334155; }
+
+  // ── Dashboard — KPI cards ─────────────────────────────────────────────────────
+  .kpi-card {
+    background: #1e293b;
+    border-color: #334155;
+    .kpi-value { color: #f1f5f9; }
+  }
+
+  // ── Dashboard — filter pills ──────────────────────────────────────────────────
+  .filter-pill {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+
+    .pill-count { background: #253047; color: #64748b; }
+
+    &:hover:not(.disabled) {
+      background: rgba(52, 211, 153, 0.08);
+      border-color: $emerald-600;
+      color: $emerald-400;
+      .pill-count { background: rgba(52, 211, 153, 0.15); color: $emerald-400; }
+    }
+  }
+
+  // ── Dashboard — chart & progress ──────────────────────────────────────────────
+  .chart-card { background: #1e293b; border-color: #334155; }
+
+  .progress { background-color: #253047; }
+
+  // Match the nesting specificity from _dashboard.scss (.progress-list .progress-item …)
+  .progress-list {
+    .progress-item {
+      border-bottom-color: #334155;
+
+      .progress-item__title { color: #e2e8f0; }
+      .progress-item__pct   { color: $emerald-400; }
+    }
+  }
+
+  // ── Dashboard — insight/tip banners ───────────────────────────────────────────
+  .insight-banner {
+    background: rgba(52, 211, 153, 0.08);
+    border-color: rgba(52, 211, 153, 0.2);
+    .insight-banner__text { color: $emerald-300; }
+  }
+
+  .tip-banner {
+    background: rgba(14, 165, 233, 0.08);
+    border-color: rgba(14, 165, 233, 0.2);
+    color: #7dd3fc;
+  }
+
+  // ── Dashboard — recent list ───────────────────────────────────────────────────
+  // Match nesting from _dashboard.scss (.recent-list .recent-item …)
+  .recent-list {
+    .recent-item {
+      background: #1e293b;
+      border-color: #334155;
+      &:hover { border-color: $emerald-700; }
+
+      .recent-item__title { color: #e2e8f0; }
+      .recent-item__meta  { color: #64748b; }
+      .recent-item__arrow { color: #334155; }
+    }
+  }
+
+  // ── Dashboard — empty state ───────────────────────────────────────────────────
+  .empty-state {
+    background: #1e293b;
+    border-color: #334155;
+    .empty-state__title { color: #e2e8f0; }
+  }
+
+  // ── Dashboard — week stats ────────────────────────────────────────────────────
+  .week-stat__value { color: #f1f5f9; }
+
+  // ── Resource list ─────────────────────────────────────────────────────────────
+  .resource-card {
+    background: #1e293b;
+    border-color: #334155;
+    &__title { color: #f1f5f9; }
+    &__desc { color: #94a3b8; }
+  }
+
+  .resource-search__input {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+    &::placeholder { color: #475569; }
+  }
+
+  // ── Resource detail ───────────────────────────────────────────────────────────
+  .detail-card {
+    background: #1e293b;
+    border-color: #334155;
+    &__title { color: #f1f5f9; }
+    &__desc { color: #94a3b8; }
+    &__footer { background: #253047; border-top-color: #334155; }
+  }
+
+  .stats-card {
+    background: #1e293b;
+    border-color: #334155;
+    &__divider { border-top-color: #334155; }
+  }
+
+  .stats-item__value { color: #f1f5f9; }
+
+  .unit-card {
+    background: #1e293b;
+    border-color: #334155;
+    &__header { border-bottom-color: #334155; }
+    &__title { color: #f1f5f9; }
+  }
+
+  .unit-item {
+    border-bottom-color: #334155;
+    &:hover { background: #253047; }
+    &__title { color: #e2e8f0; }
+    &__duration { color: #64748b; }
+    &__notes { color: #64748b; }
+  }
+
+  .unit-action-btn {
+    background: #1e293b;
+    border-color: #334155;
+    &--edit { color: #94a3b8; &:hover { background: #253047; border-color: #475569; color: #e2e8f0; } }
+    &--delete { color: #f87171; &:hover { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3); } }
+  }
+
+  .unit-status-select {
+    &--not_started { background-color: #253047; color: #94a3b8; border-color: #334155; }
+    &--in_progress { background-color: rgba(37, 99, 235, 0.12); color: #93c5fd; border-color: rgba(37, 99, 235, 0.3); }
+    &--completed { background-color: rgba(52, 211, 153, 0.12); color: $emerald-400; border-color: rgba(52, 211, 153, 0.3); }
+  }
+
+  // ── Modals ────────────────────────────────────────────────────────────────────
+  .modal-content { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+  .modal-header {
+    border-bottom-color: #334155;
+    .modal-title { color: #f1f5f9; }
+    .btn-close { filter: invert(1); }
+  }
+  .modal-footer { border-top-color: #334155; }
+
+  // ── Status badges ─────────────────────────────────────────────────────────────
+  .status-badge {
+    &--not-started { background: #253047; color: #64748b; }
+    &--in-progress { background: rgba(37, 99, 235, 0.12); color: #93c5fd; }
+    &--completed { background: rgba(52, 211, 153, 0.12); color: $emerald-400; }
+  }
+
+  // ── Resource type badges ──────────────────────────────────────────────────────
+  .resource-badge {
+    &--udemy   { background: rgba(194, 65, 12, 0.12); color: #fb923c; }
+    &--book    { background: rgba(52, 211, 153, 0.12); color: $emerald-400; }
+    &--youtube { background: rgba(220, 38, 38, 0.12); color: #f87171; }
+    &--other   { background: #253047; color: #64748b; }
+  }
+
+  // ── Bulk table + Bootstrap .table ────────────────────────────────────────────
+  .table {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: #253047;
+    --bs-table-border-color: #334155;
+    color: #e2e8f0;
+    border-color: #334155;
+
+    > :not(caption) > * {
+      background-color: #1e293b;
+      border-bottom-color: #334155;
+
+      > * {
+        background-color: transparent;
+        color: #e2e8f0;
+        border-bottom-color: #334155;
+      }
+    }
+
+    thead > tr > th {
+      background-color: #253047;
+      color: #64748b;
+      border-bottom-color: #334155;
+    }
+  }
+
+  .bulk-table {
+    th { color: #64748b; border-bottom-color: #334155; }
+    td { color: #e2e8f0; border-color: #334155; }
+  }
+
+  // ── Bootstrap form helpers ────────────────────────────────────────────────────
+  .form-text { color: #64748b; }
+
+  .btn-outline-secondary {
+    color: #94a3b8;
+    border-color: #334155;
+    &:hover { background-color: #253047; color: #e2e8f0; border-color: #475569; }
+  }
+}
