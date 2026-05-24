@@ -1,0 +1,98 @@
+// =============================================================================
+// _settings.scss — Settings page sidebar + panels
+// =============================================================================
+@use '../abstracts/variables' as *;
+
+.settings-sidebar {
+  background: #fff;
+  border: 1px solid $grey-200;
+  border-radius: $radius-xl;
+  padding: 0.5rem;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.settings-sidebar__header {
+  padding: 0.875rem 0.75rem 0.625rem;
+  border-bottom: 1px solid $grey-100;
+  margin-bottom: 0.375rem;
+}
+
+.settings-sidebar__title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $grey-400;
+  margin: 0;
+}
+
+.settings-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border-radius: $radius-md;
+  border: none;
+  background: transparent;
+  color: $grey-600;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast;
+
+  i {
+    width: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: $grey-400;
+    transition: color $transition-fast;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: $grey-100;
+    color: $grey-800;
+
+    i { color: $grey-600; }
+  }
+
+  &.active {
+    background: $emerald-50;
+    color: $emerald-700;
+    font-weight: 600;
+
+    i { color: $emerald-600; }
+  }
+}
+
+.settings-panel {
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+.settings-form-header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid $grey-100;
+}
+
+.settings-form-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $grey-900;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.settings-form-subtitle {
+  font-size: 0.875rem;
+  color: $grey-400;
+  margin: 0;
+}
