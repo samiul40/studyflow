@@ -1,5 +1,134 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'learning:dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item active">Settings</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
-<h1>Setting</h1>
+<div class="page-header">
+  <h2>Settings</h2>
+</div>
+
+<div class="row g-4 align-items-start">
+
+  <!-- Sidebar nav -->
+  <div class="col-lg-3 col-md-4">
+    <aside class="settings-sidebar">
+      <div class="settings-sidebar__header">
+        <p class="settings-sidebar__title">Account</p>
+      </div>
+      <nav>
+        <button class="settings-nav__item {% if not password_form.errors %}active{% endif %}" data-panel="account">
+          <i class="fas fa-user"></i>
+          Account Details
+        </button>
+        <button class="settings-nav__item {% if password_form.errors %}active{% endif %}" data-panel="security">
+          <i class="fas fa-lock"></i>
+          Security
+        </button>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content panels -->
+  <div class="col-lg-9 col-md-8">
+
+    <!-- Account Details -->
+    <div class="settings-panel {% if not password_form.errors %}active{% endif %}" id="panel-account">
+      <div class="form-card">
+
+        <div class="settings-form-header">
+          <h3 class="settings-form-title">Account Details</h3>
+          <p class="settings-form-subtitle">Update your name and email address</p>
+        </div>
+
+        {% if profile_form.errors %}
+        <div class="alert alert-danger mb-4">
+          <i class="fas fa-circle-exclamation me-2"></i> Please fix the errors below.
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="profile">
+
+          <div class="row g-3">
+            <div class="col-sm-6">
+              {% include "partials/_form_field.html" with field=profile_form.first_name %}
+            </div>
+            <div class="col-sm-6">
+              {% include "partials/_form_field.html" with field=profile_form.last_name %}
+            </div>
+          </div>
+
+          {% include "partials/_form_field.html" with field=profile_form.email %}
+
+          <div class="form-card__actions">
+            <span></span>
+            <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
+              <span class="btn-text">Save Changes</span>
+              <span class="spinner-border spinner-border-sm d-none"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Security / Change Password -->
+    <div class="settings-panel {% if password_form.errors %}active{% endif %}" id="panel-security">
+      <div class="form-card">
+
+        <div class="settings-form-header">
+          <h3 class="settings-form-title">Change Password</h3>
+          <p class="settings-form-subtitle">Choose a new password for your account</p>
+        </div>
+
+        {% if password_form.errors %}
+        <div class="alert alert-danger mb-4">
+          <i class="fas fa-circle-exclamation me-2"></i> Please fix the errors below.
+        </div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="password">
+          {% include "partials/_form_field.html" with field=password_form.old_password %}
+          {% include "partials/_form_field.html" with field=password_form.new_password1 %}
+          {% include "partials/_form_field.html" with field=password_form.new_password2 %}
+          <div class="form-card__actions">
+            <span></span>
+            <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
+              <span class="btn-text">Update Password</span>
+              <span class="spinner-border spinner-border-sm d-none"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const navItems = document.querySelectorAll('.settings-nav__item');
+  const panels = document.querySelectorAll('.settings-panel');
+
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navItems.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    });
+  });
+</script>
 {% endblock %}
