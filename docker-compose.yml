@@ -27,6 +27,8 @@ services:
       - web/.env
     environment:
       POSTGRES_HOST: db
+      EMAIL_HOST: mailhog
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
     depends_on:
       db:
         condition: service_healthy
@@ -41,6 +43,14 @@ services:
       - ./dockerfiles/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - web
+
+  mailhog:
+    container_name: studyflow_mailhog
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
 
 volumes:
   postgres_data:
