@@ -194,12 +194,16 @@ class LearningUnitReorderView(UserPermissionMixin, UserResourceMixin, View):
 
     def post(self, request, resource_pk):
         resource = self.get_resource()
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+            order = data["order"]
+        except (json.JSONDecodeError, KeyError):
+            return JsonResponse({"status": "error"}, status=400)
 
         cases = []
         ids = []
 
-        for item in data["order"]:
+        for item in order:
             ids.append(item["id"])
             cases.append(When(id=item["id"], then=item["order"]))
 

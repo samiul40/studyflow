@@ -3,13 +3,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
-api_patterns = [
-    path("learning/", include("learning.api.urls")),
-]
-
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include(api_patterns)),
     path("", include("pages.urls")),
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("accounts.urls")),
