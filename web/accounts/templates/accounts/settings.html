@@ -89,30 +89,50 @@
       <div class="form-card">
 
         <div class="settings-form-header">
-          <h3 class="settings-form-title">Change Password</h3>
-          <p class="settings-form-subtitle">Choose a new password for your account</p>
+          <h3 class="settings-form-title">
+            {% if request.user.has_usable_password %}Change Password{% else %}Set a Password{% endif %}
+          </h3>
+          <p class="settings-form-subtitle">
+            {% if request.user.has_usable_password %}
+              Choose a new password for your account
+            {% else %}
+              Set a local password so you can also sign in without Google
+            {% endif %}
+          </p>
         </div>
 
-        {% if password_form.errors %}
-        <div class="alert alert-danger mb-4">
-          <i class="fas fa-circle-exclamation me-2"></i> Please fix the errors below.
-        </div>
-        {% endif %}
+        {% if request.user.has_usable_password %}
 
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" name="form_type" value="password">
-          {% include "partials/_form_field.html" with field=password_form.old_password %}
-          {% include "partials/_form_field.html" with field=password_form.new_password1 %}
-          {% include "partials/_form_field.html" with field=password_form.new_password2 %}
-          <div class="form-card__actions">
-            <span></span>
-            <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
-              <span class="btn-text">Update Password</span>
-              <span class="spinner-border spinner-border-sm d-none"></span>
-            </button>
+          {% if password_form.errors %}
+          <div class="alert alert-danger mb-4">
+            <i class="fas fa-circle-exclamation me-2"></i> Please fix the errors below.
           </div>
-        </form>
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="password">
+            {% include "partials/_form_field.html" with field=password_form.old_password %}
+            {% include "partials/_form_field.html" with field=password_form.new_password1 %}
+            {% include "partials/_form_field.html" with field=password_form.new_password2 %}
+            <div class="form-card__actions">
+              <span></span>
+              <button type="submit" class="btn btn-primary" onclick="handleSubmit(this)">
+                <span class="btn-text">Update Password</span>
+                <span class="spinner-border spinner-border-sm d-none"></span>
+              </button>
+            </div>
+          </form>
+
+        {% else %}
+
+          <p class="text-muted small mb-4">
+            Your account uses Google to sign in and doesn't have a local password.
+            Setting one won't affect your Google account — it just gives you an additional way to log in.
+          </p>
+          <a href="{% url 'account_set_password' %}" class="btn btn-primary">Set a password</a>
+
+        {% endif %}
 
       </div>
     </div>

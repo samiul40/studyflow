@@ -29,7 +29,7 @@
             <hr class="dropdown-divider">
           </li>
           <li>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'account_logout' %}">
               {% csrf_token %}
               <button type="submit" class="dropdown-item text-danger">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout
@@ -108,7 +108,7 @@
             <hr class="dropdown-divider">
           </li>
           <li>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'account_logout' %}">
               {% csrf_token %}
               <button type="submit" class="dropdown-item text-danger">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout

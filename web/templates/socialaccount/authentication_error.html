@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="login-section">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="login-brand">StudyFlow<span>.</span></div>
+      <p class="login-subtitle">Sign in failed</p>
+    </div>
+
+    <div class="alert alert-danger" role="alert">
+      An error occurred while attempting to sign in via Google. Please try again.
+    </div>
+
+    <a href="{% url 'account_login' %}" class="btn btn-primary w-100">Back to sign in</a>
+
+  </div>
+</section>
+{% endblock %}
