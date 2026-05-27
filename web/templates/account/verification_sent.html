@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="login-section">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="login-brand">StudyFlow<span>.</span></div>
+      <p class="login-subtitle">Confirm your email</p>
+    </div>
+
+    <p class="text-muted small mb-4">
+      We've sent a confirmation link to your email address. Click the link to activate your account.
+      Check your spam folder if it doesn't arrive within a few minutes.
+    </p>
+
+    <a href="{% url 'account_login' %}" class="btn btn-primary w-100">Back to sign in</a>
+
+  </div>
+</section>
+{% endblock %}

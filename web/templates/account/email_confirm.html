@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="login-section">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="login-brand">StudyFlow<span>.</span></div>
+      <p class="login-subtitle">Confirm your email</p>
+    </div>
+
+    {% if confirmation %}
+    <p class="text-muted small mb-4">
+      Please confirm that <strong>{{ confirmation.email_address.email }}</strong> is your email address.
+    </p>
+    <form method="POST" action="{% url 'account_confirm_email' confirmation.key %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary w-100">Confirm email address</button>
+    </form>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+      This confirmation link is invalid or has expired.
+    </div>
+    <a href="{% url 'account_login' %}" class="btn btn-primary w-100">Back to sign in</a>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

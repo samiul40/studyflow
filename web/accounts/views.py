@@ -1,38 +1,10 @@
-from django.contrib import auth, messages
+from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
-from django.utils.decorators import method_decorator
 from django.views import View
 
-from .decorators import unauthenticated_user
 from .forms import ChangePasswordForm, ProfileUpdateForm
-
-
-@method_decorator(unauthenticated_user, name="dispatch")
-class Login(View):
-    def get(self, request):
-        return render(request, "accounts/login.html")
-
-    def post(self, request):
-        username = request.POST["username"]
-        password = request.POST["password"]
-
-        user = auth.authenticate(username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-            messages.success(request, "You are now logged in")
-            return redirect("learning:dashboard")
-        else:
-            messages.error(request, "Invalid credentials")
-            return redirect("login")
-
-
-def logout(request):
-    if request.method == "POST":
-        auth.logout(request)
-        messages.success(request, "You are now logged out")
-        return redirect("login")
 
 
 class Settings(LoginRequiredMixin, View):
