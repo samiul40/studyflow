@@ -29,8 +29,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     # External Packages
-    "rest_framework",
-    "django_filters",
     "adminsortable2",
     "allauth",
     "allauth.account",
@@ -188,6 +186,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Security headers (enforced in production only)
+
+if not DEBUG and not os.environ.get("CI"):
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Email
