@@ -1,0 +1,49 @@
+services:
+  db:
+    container_name: studyflow_db_dev
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    container_name: studyflow_web_dev
+    build:
+      context: .
+      dockerfile: dockerfiles/backend/Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./web:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - web/.env
+    environment:
+      POSTGRES_HOST: db
+      EMAIL_HOST: mailhog
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+    depends_on:
+      db:
+        condition: service_healthy
+
+  mailhog:
+    container_name: studyflow_mailhog
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  postgres_data_dev:
